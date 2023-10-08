@@ -1,0 +1,58 @@
+{% extends "authBase.html" %}
+{% block title %}
+The Swim Journal | Coach Signup
+{% endblock %}
+{% block content %}
+<div class="container" style="margin-top: 20px; margin-left:0px"></div>
+<form method="POST">
+    <h3>Coach Sign-Up</h3>
+    <div class="form-group">
+      <label for="forename">Forename</label>
+      <input
+        type="text"
+        id="forename"
+        name="forename"
+        class="form-control"
+        placeholder="Enter Forename"
+      />
+      <label for="surname">Surname</label>
+      <input
+        type="text"
+        id="surname"
+        name="surname"
+        class="form-control"
+        placeholder="Enter Surname"
+      />
+      <label for="email">Email Address</label>
+      <input
+        type="text"
+        id="email"
+        name="email"
+        class="form-control"
+        placeholder="Enter Email"
+      />
+      <label for="password1">Password</label>
+      <input
+        type="password"
+        id="password1"
+        name="password1"
+        class="form-control"
+        placeholder="Enter Password"
+      />
+      <label for="password2">Password Again</label>
+      <input
+        type="password"
+        id="password2"
+        name="password2"
+        class="form-control"
+        placeholder="Enter Password Again"
+      />
+      <br />
+      <div>
+        <button class="btn btn-primary" type="submit">Sign Up</button>
+      </div>
+    </div>
+  </form>
+  <a href="/swimmerSignup">I'm a Swimmer</a>
+</div>
+{% endblock %}
