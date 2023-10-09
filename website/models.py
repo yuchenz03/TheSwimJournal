@@ -3,6 +3,7 @@ from flask_login import UserMixin
 from sqlalchemy.sql import func
     
 class SwimmerSession(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     #sessionID
     #userID
     attendance = db.Column(db.Boolean, default=False, nullable=False)
@@ -15,14 +16,26 @@ class SwimmerSession(db.Model):
     urineColour = db.column(db.Integer)   
 
 class SessionWorkout(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
     #exerciseID
     reps = db.Column(db.Integer)
     #sessionID
+    
 
 class Exercises(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     targetMuscles = db.Column(db.String(200))
+
+class Session(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime(timezone=True), default=func.now)
+    time = db.Column(db.String(150)) #AM/ PM
+    journal = db.Column(db.String(1000))
+    #squadID
+    #userID
+    
     
     
 class User(db.Model, UserMixin): #Creating the user model
@@ -33,7 +46,7 @@ class User(db.Model, UserMixin): #Creating the user model
     password = db.Column(db.String(150))
     date_created = db.Column(db.DateTime(timezone=True), default=func.now()) #The date and time when this is stored is saved as a new column
     squadID = db.Column(db.Integer)
-    seasonGoal = db.Column(db.String(1000))
+    seasonGoal = db.Column(db.String(1000)) #paragraph
     yearlyGoal = db.Column(db.String(1000))
     gender = db.Column(db.String(150))
     birthday = db.Column(db.String(150))
@@ -45,6 +58,7 @@ class Squads(db.Model):
     squadName = db.Column(db.String(150), unique=True)
 
 class SquadCoaches(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     ...
     #squadID
     #coachID
@@ -67,9 +81,11 @@ class Splits(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     #CRID
     splitNum = db.Column(db.Integer)
-    splitTime = db.Column(db.Integer)
+    splitTime = db.Column(db.Float)
     
 class Events(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     stroke = db.Column(db.String(50))
     distance = db.Column(db.String(50))    ##### think about how you wanna do this
+    SCMBaseTime = db.Column(db.Float)
+    LCMBaseTime = db.Column(db.Float)
