@@ -13,6 +13,16 @@ class SwimmerSession(db.Model):
     sleep = db.column(db.Integer)
     fatigue = db.column(db.Integer)
     urineColour = db.column(db.Integer)   
+
+class SessionWorkout(db.Model):
+    #exerciseID
+    reps = db.Column(db.Integer)
+    #sessionID
+
+class Exercises(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    targetMuscles = db.Column(db.String(200))
     
     
 class User(db.Model, UserMixin): #Creating the user model
@@ -50,4 +60,16 @@ class Competition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     date = db.Column(db.DateTime(timezone=True), default=func.now())
+    poolLength = db.Column(db.String(3)) #SCM, SCY, LCM
     
+
+class Splits(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    #CRID
+    splitNum = db.Column(db.Integer)
+    splitTime = db.Column(db.Integer)
+    
+class Events(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    stroke = db.Column(db.String(50))
+    distance = db.Column(db.String(50))    ##### think about how you wanna do this
