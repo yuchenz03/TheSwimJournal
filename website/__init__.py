@@ -4,21 +4,24 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 
-db = SQLAlchemy()
-DB_NAME = "database.db"
 
-#This step is required to create a flask application - any website using flask requires this as the first step
+#Creating the swimJournal.db database
+db = SQLAlchemy()
+DB_NAME = "swimJournal.db"
+
+#This step is required to create a flask application - any website using flask requires this step.
 def create_app():
     app = Flask(__name__) #variable name is name of the Flask app. __name__ is the name of the module used to run this app.
-    app.config['SECRET_KEY'] = 'taylorswiftisthegoat'
+    app.config['SECRET_KEY'] = 'taylorswiftisthegoat'  #secret key
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
-    db.init_app(app)
+    db.init_app(app) 
 
-    # from .pages import pages
     from .auth import auth #there is a dot before pages after from because the function is within a python package. If it wasn't, you wouldn't need the dot
-    from .pages import pages
+    from .swimmerPages import swimmerPages
+    from .coachPages import coachPages
     app.register_blueprint(auth, url_prefix='/')
-    app.register_blueprint(pages, url_prefix='/')
+    app.register_blueprint(swimmerPages, url_prefix='/swimmer')
+    app.register_blueprint(coachPages, url_prefix='/coach')
 
     from .models import User #This must be done to create the user table when we open the database
     
