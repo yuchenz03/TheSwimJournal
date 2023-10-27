@@ -72,8 +72,8 @@ def coach_sign_up():
             flash('Passwords don\'t match.', category='error')
         elif len(password1) < 8:
             flash('Password must be at least 8 characters.', category='error')
-        # elif password1.isalnum() and not password1.isalpha() and not password1.isdigit():        
-        #     flash('Password must contain both letters and numbers.', category='error')
+        elif password1.isalnum() and not password1.isalpha() and not password1.isdigit():        
+            flash('Password must contain both letters and numbers.', category='error')
         else:
             new_user = User(email=email, forename=forename, surname=surname, password=generate_password_hash(
                 password1, method='sha256'), role=role)
