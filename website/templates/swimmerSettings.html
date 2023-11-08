@@ -1,0 +1,55 @@
+{% extends "swimmerBase.html" %}
+{% block title %}
+The Swim Journal | Settings
+{% endblock %}
+{% block sidenav %}
+    <!--This is the side navbar-->
+    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 130px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/swimmerSession">
+        <span class=""nav-tiem">Today's Session</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmerJournal">
+        <span class=""nav-tiem">Journal</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmerGoals">
+        <span class=""nav-tiem">Goals</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmerPBs">
+        <span class=""nav-tiem">Personal Bests</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmerSettings">
+        <span class=""nav-tiem">Account Settings</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
+        <span class=""nav-tiem">Logout</span>
+      </a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Edit Account Details</h1>
+    <form method="POST">
+        <div class="form-group">
+            <label for="forename">First Name:</label>
+            <input type="text" name="forename" id="forename" value="{{ user.forename }}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="surname">Last Name:</label>
+            <input type="text" name="surname" id="surname" value="{{ user.surname }}" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="password1">Password:</label>
+            <input type="password" name="password1" id="password1" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="password2">Password Again:</label>
+            <input type="password" name="password2" id="password2" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="squads_id">Squad ID</label>
+          <input type="text" name="squads_id" id="squads_id" class="form-control">
+      </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+{% endblock %}
+

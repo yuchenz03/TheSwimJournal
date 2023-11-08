@@ -7,6 +7,15 @@ from flask_login import login_user, login_required, logout_user, current_user
 
 auth = Blueprint('auth', __name__)
 
+#Checking if a password is valid
+def isValid(password):
+    letter = any(c.isalpha() for c in password)
+    digit = any(c.isdigit() for c in password)
+    specialChar = any(not c.isalnum() for c in password)
+
+    return letter and digit and specialChar
+
+
 @auth.route("/") #create a blueprint for whenever the app is called with / as its location
 @auth.route("/home") #Having two @pages.route() for one function indicates that there is one page that is returned for these two locations.
 def homepage():
@@ -72,8 +81,8 @@ def coach_sign_up():
             flash('Passwords don\'t match.', category='error')
         elif len(password1) < 8:
             flash('Password must be at least 8 characters.', category='error')
-        elif password1.isalnum() and not password1.isalpha() and not password1.isdigit():        
-            flash('Password must contain both letters and numbers.', category='error')
+        elif not isValid(password1):
+            flash('Password must contain letters, numbers and special characters.', category='error')
         else:
             new_user = User(email=email, forename=forename, surname=surname, password=generate_password_hash(
                 password1, method='sha256'), role=role)
@@ -110,8 +119,8 @@ def swimmer_sign_up():
             flash('Passwords don\'t match.', category='error')
         elif len(password1) < 8:
             flash('Password must be at least 8 characters.', category='error')
-        # elif password1.isalpha() == False and password1.isdigit() == False:        
-        #     flash('Password must contain both letters and numbers.', category='error')
+        elif not isValid(password1):
+            flash('Password must contain letters, numbers and special characters.', category='error')
         else:
             new_user = User(email=email, forename=forename, surname=surname, password=generate_password_hash(
                 password1, method='sha256'), role=role)

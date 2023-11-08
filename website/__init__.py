@@ -17,11 +17,11 @@ def create_app():
     db.init_app(app) 
 
     from .auth import auth #there is a dot before pages after from because the function is within a python package. If it wasn't, you wouldn't need the dot
-    from .swimmerPages import swimmerPages
-    from .coachPages import coachPages
+    from .swimmerPages import swimmerpages
+    from .coachPages import coachpages
     app.register_blueprint(auth, url_prefix='/')
-    app.register_blueprint(swimmerPages, url_prefix='/swimmer')
-    app.register_blueprint(coachPages, url_prefix='/coach')
+    app.register_blueprint(swimmerpages, url_prefix='/swimmer')
+    app.register_blueprint(coachpages, url_prefix='/coach')
 
     from .models import User #This must be done to create the user table when we open the database
     

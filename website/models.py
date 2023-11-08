@@ -18,29 +18,29 @@ class SessionWorkout(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     reps = db.Column(db.Integer)
-    exerciseID = db.Column(db.Integer, db.ForeignKey('exercises.id'))
+    exerciseID = db.Column(db.Integer, db.ForeignKey('exercise.id'))
     sessionID = db.Column(db.Integer, db.ForeignKey('session.id'))
     
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
     targetMuscles = db.Column(db.String(200))
-    sessionWorkout = db.relationship('SessionWorkout', backref="exercises")
+    sessionWorkout = db.relationship('SessionWorkout', backref="exercise")
     
 #Squads must be before session
 class Squad(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     squadName = db.Column(db.String(150), unique=True) #words
-    user = db.relationship('User', backref="squads") #a backref relationship with the session table
-    squadCoaches = db.relationship('SquadCoaches', backref="squadcoaches")
-    session = db.relationship('Session', backref="squads")
+    user = db.relationship('User', backref="squad") #a backref relationship with the session table
+    squadCoaches = db.relationship('SquadCoach', backref="squad")
+    session = db.relationship('Session', backref="squad")
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime(timezone=True), default=func.now)
     time = db.Column(db.String(150)) #AM/ PM
     journal = db.Column(db.String(1000)) #paragraph
-    squadID = db.Column(db.Integer, db.ForeignKey('squads.id')) #foreign key for squad
+    squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
     userID = db.Column(db.Integer, db.ForeignKey('user.id')) #foreign key for user
     swimmerSession = db.relationship('SwimmerSession', backref="session", passive_deletes=True) #backref relationship with SwimmerSession
     sessionWorkout = db.relationship('SessionWorkout', backref="sessionworkout")
@@ -52,7 +52,7 @@ class User(db.Model, UserMixin): #Creating the user model
     email = db.Column(db.String(150), unique=True) #unique=True ensures that no users have duplicate emails and usernames
     password = db.Column(db.String(150)) #string of characters
     date_created = db.Column(db.DateTime(timezone=True), default=func.now()) #The date and time when this is stored is saved as a new column
-    squadID = db.Column(db.Integer, db.ForeignKey('squads.id')) #foreign key for squad
+    squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
     seasonGoal = db.Column(db.String(1000)) #paragraph
     yearlyGoal = db.Column(db.String(1000)) #paragraph
     gender = db.Column(db.String(6)) #Male or Female
@@ -60,13 +60,13 @@ class User(db.Model, UserMixin): #Creating the user model
     nationality = db.Column(db.String(150)) #preset values
     formStroke = db.Column(db.String(150)) #preset values
     session = db.relationship('Session', backref="user", passive_deletes=True) #a backref relationship with the session table
-    squadCoaches = db.relationship('SquadCoaches', backref="user") #a backref relationship with the squadCoaches table
-    competitionRecord = db.relationship('CompetitionRecord', backref="user")
+    squadCoaches = db.relationship('SquadCoach', backref="user") #a backref relationship with the squadCoaches table
+    competitionRecord = db.relationship('Competitionrecord', backref="user")
     role = db.Column(db.String(150)) #swimmer 
 
 class SquadCoach(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    squadID = db.Column(db.Integer, db.ForeignKey('squads.id')) #foreign key for squad
+    squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
     coachID = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 class Competitionrecord(db.Model):
@@ -75,7 +75,7 @@ class Competitionrecord(db.Model):
     timeSwam = db.Column(db.Float) #Time swam in seconds
     competitionID = db.Column(db.Integer, db.ForeignKey('competition.id')) #foreign key for competition
     finaPoints = db.Column(db.Integer) #FINA points scored from this swim
-    splits = db.relationship('Splits', backref="competitionrecord")
+    splits = db.relationship('Split', backref="competitionrecord")
     eventID = db.Column(db.Integer, db.ForeignKey('event.id'))
     
     
@@ -84,7 +84,7 @@ class Competition(db.Model):
     name = db.Column(db.String(200)) #Competition name
     date = db.Column(db.DateTime(timezone=True), default=func.now()) #date of competition
     poolLength = db.Column(db.String(3)) #SCM, SCY, LCM
-    competitionRecord = db.relationship('CompetitionRecord', backref="competition")  ####### CHECK IF YOU NEED RELATIONSHIP ######
+    competitionRecord = db.relationship('Competitionrecord', backref="competition")  ####### CHECK IF YOU NEED RELATIONSHIP ######
     
 
 class Split(db.Model):

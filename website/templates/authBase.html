@@ -46,6 +46,7 @@
         <a class="nav-item nav-link" href="/coachSignup", style="color:black;font-family: Times New Romans;">Sign up</a>
         <a class="nav-item nav-link" href="/conversionTool", style="color:black;font-family: Times New Romans;">Conversion Tool</a>
     </nav>
+    <!--Jinja that allows error or confirmation messages to be flashed-->
       {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}   
         {% for category, message in messages %}
@@ -60,7 +61,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
         {% endif %}
-
+   
         {% endfor %}
       {% endif %}
     {% endwith %}
