@@ -1,3 +1,6 @@
+###CORRECTED###
+
+
 #Importing all the dependencies
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy

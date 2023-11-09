@@ -1,3 +1,6 @@
+###CORRECTED###
+
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -38,9 +41,9 @@ def login():
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
                 if user.role == "swimmer":
-                    return redirect(url_for('pages.swimmerSession'))
+                    return redirect(url_for('swimmerPages.swimmerDashboard'))
                 elif user.role == "coach":
-                    return redirect(url_for('pages.coachSession'))
+                    return redirect(url_for('coachPages.coachDashboard'))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
@@ -53,7 +56,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('auth.login'))
+    return redirect(url_for('auth.homepage'))
 
 
 @auth.route('/coachSignup', methods=['GET', 'POST'])
@@ -90,7 +93,7 @@ def coach_sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('pages.coachDashboard'))
+            return redirect(url_for('coachPages.Dashboard'))
 
     return render_template("coachSignup.html", user=current_user)
 
@@ -128,6 +131,6 @@ def swimmer_sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('pages.swimmerDashboard'))
+            return redirect(url_for('swimmerPages.swimmerDashboard'))
 
     return render_template("swimmerSignup.html", user=current_user)

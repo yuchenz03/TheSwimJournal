@@ -118,26 +118,28 @@ def coachSettings():
         password1 = request.form['password1']
         password2 = request.form['password2']
         
-        if len(forename) < 2:
+        if len(forename) != 0 and len(forename) < 2:
             flash('First name must be greater than 1 character.', category='error')
-        elif len(surname) < 2:
+        elif len(surname) != 0 and len(surname) < 2:
             flash('Surname must be greater than 1 character.', category='error')
             flash('Passwords don\'t match.', category='error')
-        elif len(password1) < 8:
+        elif len(password1) != 0 and len(password1) < 8:
             flash('Password must be at least 8 characters.', category='error')
         elif password1 != password2:
             flash('Passwords don\'t match.', category='error')
-        elif not isValid(password1):
+        elif len(password1) != 0 and not isValid(password1):
             flash('Password must contain letters, numbers and special characters.', category='error')
         
         # If you want to update the password, handle it securely (e.g., hashing) before saving it.
-        current_user.forename = forename
-        current_user.surname = surname
+        if len(forename) > 0:
+            current_user.forename = forename
+        if len(surname) > 0:
+            current_user.surname = surname
         if len(password1) > 0:
             current_user.password = generate_password_hash(password1, method='sha256')
 
         db.session.commit()
-        flash('User information updated successfully', 'success')
+        flash('User information updated successfully.', 'success')
         return redirect(url_for('coachPages.coachSettings'))
     return render_template("coachSettings.html", user=current_user)
 

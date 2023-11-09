@@ -2,7 +2,7 @@
 
 {% extends "swimmerBase.html" %}
 {% block title %}
-The Swim Journal | Settings
+The Swim Journal | Dashboard
 {% endblock %}
 {% block sidenav %}
     <!--This is the side navbar-->
@@ -29,29 +29,10 @@ The Swim Journal | Settings
 {% endblock %}
 
 {% block content %}
-<h1>Edit Account Details</h1>
-    <form method="POST">
-        <div class="form-group">
-            <label for="forename">First Name:</label>
-            <input type="text" name="forename" id="forename" value="{{ user.forename }}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="surname">Last Name:</label>
-            <input type="text" name="surname" id="surname" value="{{ user.surname }}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="password1">Password:</label>
-            <input type="password" name="password1" id="password1" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="password2">Password Again:</label>
-            <input type="password" name="password2" id="password2" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="squads_id">Squad ID</label>
-          <input type="text" name="squads_id" id="squads_id" class="form-control">
-      </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+<h1>Welcome, {{name}}!</h1>
+<div class="container", style="border: 1px solid #ccc; margin:0px; margin-bottom:20px; height: 200px; border-radius: 15px; width:850px; position: relative">
+</div>
+<div class="container", style="border: 1px solid #ccc; margin:0px; height: 200px;border-radius: 15px; width:850px; position: relative"">
+    </div>
 {% endblock %}
 
