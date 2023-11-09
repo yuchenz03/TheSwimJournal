@@ -1,0 +1,118 @@
+{% extends "swimmerBase.html" %}
+{% block title %}
+The Swim Journal | Dashboard
+{% endblock %}
+{% block sidenav %}
+    <!--This is the side navbar-->
+    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 130px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/swimmer/Session">
+        <span class=""nav-tiem">Today's Session</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Journal">
+        <span class=""nav-tiem">Journal</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Goals">
+        <span class=""nav-tiem">Goals</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/PBs">
+        <span class=""nav-tiem">Personal Bests</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Settings">
+        <span class=""nav-tiem">Account Settings</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
+        <span class=""nav-tiem">Logout</span>
+      </a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Session</h1>
+<div class="container" style="border: 1px solid #ccc; margin:0px; margin-bottom:20px; height: 500px; border-radius: 15px; width:850px; position: relative">
+    <h2>Pre-session Questionnaire</h2>
+    <label for="sleep">How many hours of sleep: </label>
+    <input type="range" id="sleep" name="sleep" min="0" max="12" step="1" value="8">
+    <p>Sleep: <span id="sleepvalue">8</span></p>
+    <script>
+        // JavaScript to update the selected value when the slider changes
+        var slider1 = document.getElementById("sleep");
+        var output1 = document.getElementById("sleepvalue");
+        output1.innerHTML = slider1.value;
+        slider1.oninput = function() {
+            output1.innerHTML = this.value;
+        };
+    </script>
+
+    <label for="stress">Stress: </label>
+    <input type="range" id="stress" name="stress" min="1" max="10" step="1" value="5">
+    <p>Stress: <span id="stressvalue">5</span></p>
+    <script>
+        var slider2 = document.getElementById("stress");
+        var output2 = document.getElementById("stressvalue");
+        output2.innerHTML = slider2.value;
+        slider2.oninput = function() {
+            output2.innerHTML = this.value;
+        };
+    </script>
+
+    <label for="fatigue">Fatigue</label>
+    <input type="range" id="fatigue" name="fatigue" min="1" max="10" step="1" value="5">
+    <p>Fatigue: <span id="fatiguevalue">5</span></p>
+    <script>
+        var slider3 = document.getElementById("fatigue");
+        var output3 = document.getElementById("fatiguevalue");
+        output3.innerHTML = slider3.value;
+        slider3.oninput = function() {
+            output3.innerHTML = this.value;
+        };
+    </script>
+
+    <label for="urine">Urine Colour: (1 being clear, 5 being dark yellow) </label>
+    <input type="range" id="urine" name="urine" min="1" max="5" step="1" value="3">
+    <p>Urine Colour: <span id="urinevalue">1</span></p>
+    <script>
+        var slider4 = document.getElementById("urine");
+        var output4 = document.getElementById("urinevalue");
+        output4.innerHTML = slider4.value;
+        slider4.oninput = function() {
+            output4.innerHTML = this.value;
+        };
+    </script>
+
+    <hr>
+
+    <h2>Ability to Train</h2>
+    <button id="calculateButton">Calculate</button>
+    <p>Total Score: <span id="totalScore">0</span></p>
+    <p>Percentage: <span id="percentage">0</span></p>
+
+    <script>
+        // JavaScript to calculate the total score and display it when the button is clicked
+        var calculateButton = document.getElementById("calculateButton");
+        var totalScore = document.getElementById("totalScore");
+
+        calculateButton.onclick = function() {
+            var sleepValue = parseInt(document.getElementById("sleep").value);
+            var stressValue = parseInt(document.getElementById("stress").value);
+            var fatigueValue = parseInt(document.getElementById("fatigue").value);
+            var urineValue = parseInt(document.getElementById("urine").value);
+
+            var total = sleepValue + stressValue + fatigueValue + urineValue;
+            var calculatedPercentage = (total / 37) * 100
+            totalScore.innerHTML = total;
+            percentage.innerHTML = calculatedPercentage.toFixed(2) + "%"; // Display percentage with two decimal places;
+        };
+    </script>
+</div>
+<div class="container", style="border: 1px solid #ccc; margin:0px; height: 200px;border-radius: 15px; width:850px; position: relative"">
+  <h2>Post-session Thoughts</h2>
+  <form method="POST">
+    <textarea name="entry" id="entry" class="form-control"></textarea>
+    <br />
+    <div>
+      <button type="submit" class="btn btn-primary">Add Entry</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+

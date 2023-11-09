@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify #From the flask application, import Blueprint
 from . import db
-from .models import User, Exercise
+from .models import User, Exercise, Squad
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 import sqlite3
@@ -62,35 +62,42 @@ def delete_exercise():
 @login_required
 @coachpages.route("/MySwimmers", methods = {'GET', 'POST'}) 
 def coachSwimmers():
-    # squad=""
-    # members=[]
-    # if request.method == 'POST': 
-    #     squadName = request.form.get('squadName')
-    #     squadName_exists = Squads.query.filter_by(squadName=squadName).first()
+    if current_user.squadID:
+        squadid = current_user.squadID
+        squad = Squad.query.get(squadid)
+        members = User.query.filter_by(squadID=squadid).all()
+        if squad is None:
+            # Handle the case where the squad does not exist
+            squad=[]
+        if members is None:
+            # Handle the case where there are no members
+            members=[]
         
-    #     if squadName_exists:
-    #         flash("Squad name already in use.", category="error")
-    #     elif len(squadName) < 2:
-    #         flash("Squad name too short.", category="error")
-    #     else:
-    #         squadCode = randint(1000,9999)
-    #         new_squad = Squads(id=squadCode, squadName=squadName, squadCode=squadCode)
-    #         db.session.add(new_squad)
-    #         db.session.commit()
+    else:
+        squad=""
+        members=[]
+        squadCode=0
+    if request.method == 'POST': 
+        squadName = request.form.get('squadName')
+        squadName_exists = Squad.query.filter_by(squadName=squadName).first()
+        
+        if squadName_exists:
+            flash("Squad name already in use.", category="error")
+        elif len(squadName) < 2:
+            flash("Squad name too short.", category="error")
+        else:
+            squadCode = randint(1000,9999)
+            new_squad = Squad(id=squadCode, squadName=squadName)
+            db.session.add(new_squad)
+            db.session.commit()
     
-    #     squad_id = squadCode
-    #     current_user.squads_id = squad_id
-    #     db.session.commit()
-    #     squad = Squads.query.get(squad_id)
-    #     if squad:
-    #         members = User.query.filter_by(squads_id=squad_id).all()
-    #         if squad is None:
-    #             # Handle the case where the squad does not exist
-    #             squad=[]
-    #         if members is None:
-    #             members=[]
-    #         db.session.commit()
-    return render_template("coachSwimmers.html", user=current_user,) # squad=squad,members=members)
+            squad_id = squadCode
+            current_user.squadID = squad_id
+            db.session.commit()
+        
+            squad = Squad.query.get(squad_id)
+
+    return render_template("coachSwimmers.html", user=current_user, squad=squad,members=members)
 
 @login_required
 @coachpages.route("/Journal") 

@@ -1,0 +1,52 @@
+{% extends "coachBase.html" %}
+{% block title %}
+The Swim Journal | Dashboard
+{% endblock %}
+{% block sidenav %}
+    <!--This is the side navbar-->
+    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 130px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/coachSession">
+        <span class=""nav-tiem">Today's Session</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coachSwimmers">
+        <span class=""nav-tiem">My Swimmers</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coachJournal">
+        <span class=""nav-tiem">Journal</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coachSettings">
+        <span class=""nav-tiem">Account Settings</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
+        <span class=""nav-tiem">Logout</span>
+      </a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Today's Session</h1>
+<ul class="list-group list-group-flush" id="set">
+    {% for exercise in user.exercise %}
+    <li class="list-group-item">
+      {{exercise.name}}: {{ exercise.reps }}
+      <button type="button" class="close" onClick="deleteExercise('{{exercise.id}}')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+    {% endfor %}
+  </ul>   
+  <form method="POST">
+    <label for="exercisetype">Select Exercise:</label>
+    <select name="exercisetype" id="exercisetype" class="form-control">
+      <option value="Bench Press">Bench Press</option>
+      <option value="Squat Pause">Squat Pause</option>
+      <option value="Hollow Hold">Hollow Hold</option>
+    </select>
+    Repetitions: 
+    <input name="reps" id="reps" class="form-control">
+    <br />
+    <div>
+      <button type="submit" class="btn btn-primary">Add Exercise</button>
+    </div>
+  </form>
+{% endblock %} 

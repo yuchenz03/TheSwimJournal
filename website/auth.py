@@ -67,7 +67,7 @@ def coach_sign_up():
         surname = request.form.get('surname')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        role = "coach"
+        role = "Coach"
 
         user = User.query.filter_by(email=email).first()
         if user:
@@ -93,7 +93,7 @@ def coach_sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('coachPages.Dashboard'))
+            return redirect(url_for('coachPages.coachDashboard'))
 
     return render_template("coachSignup.html", user=current_user)
 
@@ -105,7 +105,7 @@ def swimmer_sign_up():
         surname = request.form.get('surname')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        role = "swimmer"
+        role = "Swimmer"
 
         user = User.query.filter_by(email=email).first()
         if user:
@@ -134,3 +134,9 @@ def swimmer_sign_up():
             return redirect(url_for('swimmerPages.swimmerDashboard'))
 
     return render_template("swimmerSignup.html", user=current_user)
+
+
+
+@auth.route('/calendar', methods=['GET', 'POST'])
+def calendar():
+    return render_template("calendar.html", user=current_user)

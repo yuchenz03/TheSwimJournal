@@ -22,7 +22,7 @@ def swimmerDashboard():
    
 
 @login_required
-@swimmerpages.route("/swimmerSession", methods=['GET', 'POST']) 
+@swimmerpages.route("/Session", methods=['GET', 'POST']) 
 def swimmerSession():
     # if request.method == 'POST': 
     #     entry = request.form.get('entry')#Gets the entry from the HTML 
@@ -38,38 +38,38 @@ def swimmerSession():
     return render_template("swimmerSession.html", user=current_user)
 
 @login_required
-@swimmerpages.route("/swimmerSettings", methods=['GET', 'POST']) 
+@swimmerpages.route("/Settings", methods=['GET', 'POST']) 
 def swimmerSettings():
-    # if request.method == 'POST':
-    #     forename = request.form['forename']
-    #     surname = request.form['surname']
-    #     squads_id = request.form['squads_id']
-    #     password1 = request.form['password1']
-    #     password2 = request.form['password2']
+    if request.method == 'POST':
+        forename = request.form['forename']
+        surname = request.form['surname']
+        squads_id = request.form['squads_id']
+        password1 = request.form['password1']
+        password2 = request.form['password2']
         
-    #     if len(forename) < 2:
-    #         flash('First name must be greater than 1 character.', category='error')
-    #     elif len(surname) < 2:
-    #         flash('Surname must be greater than 1 character.', category='error')
-    #     elif password1 != password2:
-    #         flash('Passwords don\'t match.', category='error')
-    #     elif len(password1) < 8:
-    #         flash('Password must be at least 8 characters.', category='error')
+        if len(forename) < 2:
+            flash('First name must be greater than 1 character.', category='error')
+        elif len(surname) < 2:
+            flash('Surname must be greater than 1 character.', category='error')
+        elif password1 != password2:
+            flash('Passwords don\'t match.', category='error')
+        elif len(password1) < 8:
+            flash('Password must be at least 8 characters.', category='error')
         
-    #     # If you want to update the password, handle it securely (e.g., hashing) before saving it.
-    #     current_user.forename = forename
-    #     current_user.surname = surname
-    #     current_user.squads_id = squads_id
-    #     if len(password1) > 0:
-    #         current_user.password = generate_password_hash(password1, method='sha256')
+        # If you want to update the password, handle it securely (e.g., hashing) before saving it.
+        current_user.forename = forename
+        current_user.surname = surname
+        current_user.squadID = squads_id
+        if len(password1) > 0:
+            current_user.password = generate_password_hash(password1, method='sha256')
 
-    #     db.session.commit()
-    #     flash('User information updated successfully', 'success')
-    #     return redirect(url_for('pages.swimmerSettings'))
+        db.session.commit()
+        flash('User information updated successfully', 'success')
+        return redirect(url_for('swimmerPages.swimmerSettings'))
     return render_template("swimmerSettings.html", user=current_user)
 
 @login_required
-@swimmerpages.route("/swimmerJournal", methods=["GET","POST"]) 
+@swimmerpages.route("/Journal", methods=["GET","POST"]) 
 def swimmerJournal():
     # if request.method == 'POST': 
     #     entry = request.form.get('entry')#Gets the entry from the HTML 
@@ -100,12 +100,12 @@ def delete_entry():
     return jsonify({})
 
 @login_required
-@swimmerpages.route("/swimmerAttendance") 
+@swimmerpages.route("/Attendance") 
 def swimmerAttendance():
     return render_template("swimmerAttendance.html")
 
 @login_required
-@swimmerpages.route("/swimmerGoals", methods=["GET","POST"]) 
+@swimmerpages.route("/Goals", methods=["GET","POST"]) 
 def swimmerGoals():
     # if request.method == 'POST': 
     #     goal = request.form.get('goal') #Gets the goal from the HTML 
@@ -135,7 +135,7 @@ def swimmerGoals():
 #     return jsonify({})
 
 @login_required
-@swimmerpages.route("/swimmerPBs", methods={'GET','POST'}) 
+@swimmerpages.route("/PBs", methods={'GET','POST'}) 
 def swimmerPBs():
     # if request.method == 'POST': 
     #     event = request.form.get('event')

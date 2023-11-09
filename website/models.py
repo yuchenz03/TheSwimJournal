@@ -7,7 +7,6 @@ class SwimmerSession(db.Model):
     sessionID = db.Column(db.Integer, db.ForeignKey('session.id')) #foreign key for session
     attendance = db.Column(db.Boolean, default=False, nullable=False) #yes/no
     absenceReason = db.Column(db.String(500)) #paragraph
-    sessionJournal = db.Column(db.String(1000)) #paragraph
     sessionGoal = db.Column(db.String(1000)) #paragraph
     stress = db.column(db.Integer) #1-10
     sleep = db.column(db.Integer) #0-12
@@ -27,7 +26,6 @@ class Exercise(db.Model):
     targetMuscles = db.Column(db.String(200))
     sessionWorkout = db.relationship('SessionWorkout', backref="exercise")
     
-#Squads must be before session
 class Squad(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     squadName = db.Column(db.String(150), unique=True) #words

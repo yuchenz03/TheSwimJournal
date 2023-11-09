@@ -1,0 +1,98 @@
+{% extends "swimmerBase.html" %}
+{% block title %}
+The Swim Journal | Dashboard
+{% endblock %}
+{% block sidenav %}
+<!--This is used in the dropdown list-->
+  <script>  
+  function favTutorial() {  
+  var mylist = document.getElementById("myList");  
+  document.getElementById("favourite").value = mylist.options[mylist.selectedIndex].text;  
+  }  
+  </script> 
+<!--This is used in the delete function-->
+<script type="text/javascript">
+    function deleteTimes(timeID) {
+fetch("/delete-time", {
+  method: "POST",
+  body: JSON.stringify({ timeID: timeID }),
+}).then((_res) => {
+  window.location.href = "/swimmerPBs";
+});
+}
+</script>
+    <!--This is the side navbar-->
+    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 130px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/swimmer/Session">
+        <span class=""nav-tiem">Today's Session</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Journal">
+        <span class=""nav-tiem">Journal</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Goals">
+        <span class=""nav-tiem">Goals</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/PBs">
+        <span class=""nav-tiem">Personal Bests</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Settings">
+        <span class=""nav-tiem">Account Settings</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
+        <span class=""nav-tiem">Logout</span>
+      </a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Personal Bests</h1>
+<ul class="list-group list-group-flush" id="times">
+    {% for time in user.times %}
+        <table>
+            <tr>
+                <th>{{time.event}}</th>
+                <th>
+                    {{time.time}} 
+                </th>
+                <th>
+                    {{time.competition}} 
+                    <button type="button" class="close" onClick="deleteTimes('{{time.id}}')">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                </th>
+            </tr>
+        </table>
+    {% endfor %}
+  </ul>
+  <form method="POST">
+    <label for="event">Event</label>
+    <input
+      type="text"
+      id="event"
+      name="event"
+      class="form-control"
+      placeholder="Enter Event: (distance) (stroke)"
+    />
+    <label for="time">Time</label>
+    <input
+      type="text"
+      id="time"
+      name="time"
+      class="form-control"
+      placeholder="Enter Time"
+    />
+    <label for="competition">Competition</label>
+    <input
+      type="text"
+      id="competition"
+      name="competition"
+      class="form-control"
+      placeholder="Enter Competition"
+    />
+    <br />
+    <div>
+      <button type="submit" class="btn btn-primary">Add Entry</button>
+    </div>
+  </form>
+{% endblock %}
+

@@ -1,0 +1,84 @@
+{% extends "coachBase.html" %}
+{% block title %}
+The Swim Journal | Dashboard
+{% endblock %}
+{% block style%}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+{% endblock %}
+
+{% block sidenav %}
+    <!--This is the side navbar-->
+    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 130px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/coach/Session">
+        <span class=""nav-tiem">Today's Session</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/MySwimmers">
+        <span class=""nav-tiem">My Swimmers</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Journal">
+        <span class=""nav-tiem">Journal</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Settings">
+        <span class=""nav-tiem">Account Settings</span>
+      </a>
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/Logout">
+        <span class=""nav-tiem">Logout</span>
+      </a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>My Swimmers</h1>
+<div class="container" >
+    <h2>Create a Squad</h2>
+    <form method="POST">
+        <label for="squadName">Squad Name:</label>
+        <input type="text" id="squadName" name="squadName" required><br><br>
+
+        <input type="submit" value="Create Squad">
+    </form>
+
+<h2>My Squad</h2>
+<table>
+  <tr>
+    <th>Squad</th>
+    <th>Code</th>
+  </tr>
+  <tr>
+    <td>{{squad.squadName}}</td>
+    <td>{{squad.id}}</td>
+  </tr>
+</table>
+
+<h2>My Swimmers</h2>
+<table>
+  <tr>
+    <th>Swimmers</th>
+    <th>Squad Code</th>
+    <th>Role</th>
+  </tr>
+  {% for member in members %}
+  <tr>
+    <td>{{member.forename}} {{member.surname}}</td>
+    <td>{{member.squadID}}</td>
+    <td>{{member.role}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %} 
