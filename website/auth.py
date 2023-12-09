@@ -40,9 +40,9 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                if user.role == "swimmer":
+                if user.role == "Swimmer":
                     return redirect(url_for('swimmerPages.swimmerDashboard'))
-                elif user.role == "coach":
+                elif user.role == "Coach":
                     return redirect(url_for('coachPages.coachDashboard'))
             else:
                 flash('Incorrect password, try again.', category='error')
@@ -51,12 +51,64 @@ def login():
 
     return render_template("login.html", user=current_user)
 
+@auth.route('/securityQuestion', methods=['GET','POST'])
+def securityQuestion():
+    if request.method == 'POST':
+        SQNum = request.form.get('SQNum')
+        SQAnswer = request.form.get('SQAnswer')
+        if len(SQNum) < 1:
+            flash('Choose a security question.', category='error')
+        if len(SQAnswer) < 1:
+            flash('Submit an answer to the security question.', category='error')
+        else:
+            current_user.SQnum = SQNum
+            current_user.SQans = SQAnswer
+            db.session.commit()
+            if current_user.role == "Swimmer":
+                return redirect(url_for('swimmerPages.swimmerDashboard'))
+            elif current_user.role == "Coach":
+                return redirect(url_for('coachPages.coachDashboard'))
+    
+    return render_template("securityQuestion.html", user=current_user)
+
+@auth.route('/resetPassword', methods=['GET','POST'])
+def resetPassword():
+    if request.method == 'POST':
+        password1 = request.form.get('password1')
+        password2 = request.form.get('password2')
+        SQans = request.form.get('SQans')
+        if len(password1) < 8:
+            flash('Password must be at least 8 characters.', category='error')
+        elif password1 != password2:
+            flash('Passwords don\'t match.', category='error')
+        elif not isValid(password1):
+            flash('Password must contain letters, numbers and special characters.', category='error')
+        else:
+            current_user.password = generate_password_hash(password1, method='sha256')
+            db.session.commit()
+            logout_user()
+            return redirect(url_for('auth.login'))
+    return render_template("resetPassword.html", user=current_user)
+
+@auth.route('/enterEmail', methods=['GET','POST'])
+def enterEmail():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        
+        user = User.query.filter_by(email=email).first()
+        login_user(user, remember=True)
+        flash('If there is an account connected to this email address, you will be redirected', category='success')
+        if user:
+            return redirect(url_for('auth.resetPassword'))
+
+    return render_template("enterEmail.html", user=current_user)
 
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('auth.homepage'))
+
 
 
 @auth.route('/coachSignup', methods=['GET', 'POST'])
@@ -93,7 +145,7 @@ def coach_sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('coachPages.coachDashboard'))
+            return redirect(url_for('auth.securityQuestion'))
 
     return render_template("coachSignup.html", user=current_user)
 
@@ -131,7 +183,7 @@ def swimmer_sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('swimmerPages.swimmerDashboard'))
+            return redirect(url_for('auth.securityQuestion'))
 
     return render_template("swimmerSignup.html", user=current_user)
 

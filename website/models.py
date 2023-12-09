@@ -61,6 +61,8 @@ class User(db.Model, UserMixin): #Creating the user model
     squadCoaches = db.relationship('SquadCoach', backref="user") #a backref relationship with the squadCoaches table
     competitionRecord = db.relationship('Competitionrecord', backref="user")
     role = db.Column(db.String(150)) #swimmer 
+    SQnum = db.Column(db.Integer) #security question number
+    SQans = db.Column(db.String(150)) #security question answer
 
 class SquadCoach(db.Model):
     id = db.Column(db.Integer, primary_key=True)

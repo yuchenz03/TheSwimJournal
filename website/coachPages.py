@@ -78,7 +78,7 @@ def coachSwimmers():
         members=[]
         squadCode=0
     if request.method == 'POST': 
-        squadName = request.form.get('squadName')
+        squadName = request.form.get['squadName']
         squadName_exists = Squad.query.filter_by(squadName=squadName).first()
         
         if squadName_exists:
