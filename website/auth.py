@@ -72,23 +72,26 @@ def securityQuestion():
     return render_template("securityQuestion.html", user=current_user)
 
 @auth.route('/resetPassword', methods=['GET','POST'])
-def resetPassword():
+def resetPassword(question, answer):
     if request.method == 'POST':
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        SQans = request.form.get('SQans')
-        if len(password1) < 8:
-            flash('Password must be at least 8 characters.', category='error')
-        elif password1 != password2:
-            flash('Passwords don\'t match.', category='error')
-        elif not isValid(password1):
-            flash('Password must contain letters, numbers and special characters.', category='error')
+        userans = request.form.get('SQans')
+        if userans == answer:
+            if len(password1) < 8:
+                flash('Password must be at least 8 characters.', category='error')
+            elif password1 != password2:
+                flash('Passwords don\'t match.', category='error')
+            elif not isValid(password1):
+                flash('Password must contain letters, numbers and special characters.', category='error')
+            else:
+                current_user.password = generate_password_hash(password1, method='sha256')
+                db.session.commit()
+                logout_user()
+                return redirect(url_for('auth.login'))
         else:
-            current_user.password = generate_password_hash(password1, method='sha256')
-            db.session.commit()
-            logout_user()
-            return redirect(url_for('auth.login'))
-    return render_template("resetPassword.html", user=current_user)
+            flash('Security question answer is incorrect.', category='error')
+    return render_template("resetPassword.html", user=current_user, question=question)
 
 @auth.route('/enterEmail', methods=['GET','POST'])
 def enterEmail():
@@ -99,7 +102,7 @@ def enterEmail():
         login_user(user, remember=True)
         flash('If there is an account connected to this email address, you will be redirected', category='success')
         if user:
-            return redirect(url_for('auth.resetPassword'))
+            return redirect(url_for('auth.resetPassword', question=user.SQnum, answer=user.SQans))
 
     return render_template("enterEmail.html", user=current_user)
 
