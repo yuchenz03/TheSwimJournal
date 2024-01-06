@@ -72,26 +72,31 @@ def securityQuestion():
     return render_template("securityQuestion.html", user=current_user)
 
 @auth.route('/resetPassword', methods=['GET','POST'])
-def resetPassword(question, answer):
+def resetPassword():
     if request.method == 'POST':
+        question = request.args.get('question')
+        answer = request.args.get('answer')
+        curruser = request.args.get('curruser')
+        
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         userans = request.form.get('SQans')
         if userans == answer:
             if len(password1) < 8:
                 flash('Password must be at least 8 characters.', category='error')
-            elif password1 != password2:
-                flash('Passwords don\'t match.', category='error')
             elif not isValid(password1):
                 flash('Password must contain letters, numbers and special characters.', category='error')
+            elif password1 != password2:
+                flash('Passwords don\'t match.', category='error')
             else:
+                login_user(curruser, remember=True)
                 current_user.password = generate_password_hash(password1, method='sha256')
                 db.session.commit()
                 logout_user()
                 return redirect(url_for('auth.login'))
         else:
             flash('Security question answer is incorrect.', category='error')
-    return render_template("resetPassword.html", user=current_user, question=question)
+    return render_template("resetPassword.html", question)
 
 @auth.route('/enterEmail', methods=['GET','POST'])
 def enterEmail():
@@ -99,12 +104,11 @@ def enterEmail():
         email = request.form.get('email')
         
         user = User.query.filter_by(email=email).first()
-        login_user(user, remember=True)
         flash('If there is an account connected to this email address, you will be redirected', category='success')
         if user:
-            return redirect(url_for('auth.resetPassword', question=user.SQnum, answer=user.SQans))
+            return redirect(url_for('auth.resetPassword', question=user.SQnum, answer=user.SQans, curruser = current_user))
 
-    return render_template("enterEmail.html", user=current_user)
+    return render_template("enterEmail.html")
 
 @auth.route('/logout')
 @login_required
