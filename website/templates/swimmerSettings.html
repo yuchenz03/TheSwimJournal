@@ -1,12 +1,10 @@
-<!--CORRECTED-->
-
 {% extends "swimmerBase.html" %}
 {% block title %}
 The Swim Journal | Settings
 {% endblock %}
 {% block sidenav %}
     <!--This is the side navbar-->
-    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 130px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 140px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
       <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/swimmer/Session">
         <span class=""nav-tiem">Today's Session</span>
       </a>
@@ -22,7 +20,7 @@ The Swim Journal | Settings
       <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Settings">
         <span class=""nav-tiem">Account Settings</span>
       </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/Logout">
+      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
         <span class=""nav-tiem">Logout</span>
       </a>
 </nav>
@@ -31,27 +29,54 @@ The Swim Journal | Settings
 {% block content %}
 <h1>Edit Account Details</h1>
     <form method="POST">
-        <div class="form-group">
-            <label for="forename">First Name:</label>
-            <input type="text" name="forename" id="forename" value="{{ user.forename }}" class="form-control">
-        </div>
-        <div class="form-group">
-            <label for="surname">Last Name:</label>
-            <input type="text" name="surname" id="surname" value="{{ user.surname }}" class="form-control">
-        </div>
-        <div class="form-group">
+          <div class="form-group">
+              <label for="forename">First Name:</label>
+              <input 
+              type="text" 
+              name="forename" 
+              id="forename" 
+              value="{{ user.forename }}" 
+              class="form-control"
+              />
+          </div>
+          <div class="form-group">
+              <label for="surname">Last Name:</label>
+              <input 
+              type="text"
+              name="surname"
+              id="surname" 
+              value="{{ user.surname }}" 
+              class="form-control"
+              />
+          </div>
+          <div class="form-group">
             <label for="password1">Password:</label>
-            <input type="password" name="password1" id="password1" class="form-control">
+            <input 
+            type="password" 
+            name="password1" 
+            id="password1" 
+            class="form-control"
+            />
+          </div>
+          <div class="form-group">
+              <label for="password2">Password Again:</label>
+              <input 
+              type="password" 
+              name="password2" 
+              id="password2" 
+              class="form-control"
+              />
+          </div>
+          <div class="form-group">
+            <label for="squads_id">Squad ID</label>
+            <input 
+            type="text" 
+            name="squads_id" 
+            id="squads_id" 
+            value="{{ user.squadID }}"
+            class="form-control"
+            />
         </div>
-        <div class="form-group">
-            <label for="password2">Password Again:</label>
-            <input type="password" name="password2" id="password2" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="squads_id">Squad ID</label>
-        </div>
-          <input type="text" name="squads_id" id="squads_id" value="{{ user.squadID }}" class="form-control">
-      </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 {% endblock %}

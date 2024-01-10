@@ -1,6 +1,7 @@
 from . import db #Import all from db, which is defined in the __init__.py file
 from flask_login import UserMixin #User object will inherit from UserMixin
 from sqlalchemy.sql import func
+from flask_sqlalchemy import SQLAlchemy
     
 class SwimmerSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,10 +9,10 @@ class SwimmerSession(db.Model):
     attendance = db.Column(db.Boolean, default=False, nullable=False) #yes/no
     absenceReason = db.Column(db.String(500)) #paragraph
     sessionGoal = db.Column(db.String(1000)) #paragraph
-    stress = db.column(db.Integer) #1-10
-    sleep = db.column(db.Integer) #0-12
-    fatigue = db.column(db.Integer) #1-10
-    urineColour = db.column(db.Integer) #1-5 1 being light yellow, 5 being orange
+    stress = db.Column(db.Integer) #1-10
+    sleep = db.Column(db.Integer) #0-12
+    fatigue = db.Column(db.Integer) #1-10
+    urineColour = db.Column(db.Integer) #1-5 1 being light yellow, 5 being orange
 
 class SessionWorkout(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -23,7 +24,6 @@ class SessionWorkout(db.Model):
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200))
-    targetMuscles = db.Column(db.String(200))
     sessionWorkout = db.relationship('SessionWorkout', backref="exercise")
     
 class Squad(db.Model):
@@ -61,7 +61,7 @@ class User(db.Model, UserMixin): #Creating the user model
     squadCoaches = db.relationship('SquadCoach', backref="user") #a backref relationship with the squadCoaches table
     competitionRecord = db.relationship('Competitionrecord', backref="user")
     role = db.Column(db.String(150)) #swimmer 
-    SQnum = db.Column(db.Integer) #security question number
+    SQquestion = db.Column(db.Integer) #security question number
     SQans = db.Column(db.String(150)) #security question answer
 
 class SquadCoach(db.Model):
@@ -97,9 +97,9 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gender = db.Column(db.String(1)) #M or F
     stroke = db.Column(db.String(50)) #word
+    poolDistance = db.Column(db.String(3)) #SCM, SCY, LCM
     distance = db.Column(db.String(50)) #100m, 200y, etc. 
-    SCMBaseTime = db.Column(db.Float) #base time retrieved from world aquatics website - SCM
-    LCMBaseTime = db.Column(db.Float) #base time retrieved from world aquatics website - LCM
+    baseTime = db.Column(db.Float) #base time retrieved from world aquatics website - SCM
     
 
     ####### USE __tablename__ #######

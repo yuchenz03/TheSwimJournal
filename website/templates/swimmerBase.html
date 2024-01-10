@@ -37,9 +37,6 @@
       <a class="navbar-brand" href="/swimmer/Dashboard" style="font-family: Times New Romans; font-weight: bold; font-variant: small-caps;"><h1>The Swim Journal</h1></a>
         <!--These are the links for each page/ redirectory shown in the nav bar-->
     </nav>
-    <div class="container" style="font-family: Times New Roman; position: absolute; top: 90px; left: 140px">
-      {% block content %}{% endblock %}
-    </div>
 <script
     src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -55,28 +52,31 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"
   ></script>
-
-    <!--Jinja that allows error or confirmation messages to be flashed-->
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}   
-      {% for category, message in messages %}
-      {% if category == "error" %}
-      <div class="alert alert-danger alter-dismissible fade show" role="alert">
+  <div class="container" style="font-family: Times New Roman; position: absolute; top: 90px; left: 140px">
+    {% block content %}{% endblock %}
+  </div>
+  <!--Jinja that allows error or confirmation messages to be flashed-->
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  {% for category, message in messages %}
+    {% if category == "error" %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      {% else %}
-      <div class="alert alert-success alter-dismissible fade show" role="alert">
+    {% else %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      {% endif %}
- 
-      {% endfor %}
     {% endif %}
-  {% endwith %}
-
-{% block javascript %}
-{% endblock %}
+  {% endfor %}
+{% endif %}
+{% endwith %}
+{% block javascript %}{% endblock %}
 </body>
 </html>

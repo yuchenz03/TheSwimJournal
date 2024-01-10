@@ -48,25 +48,28 @@
         <a class="nav-item nav-link" href="/coachSignup", style="color:black;font-family: Times New Romans;">Sign up</a>
         <a class="nav-item nav-link" href="/conversionTool", style="color:black;font-family: Times New Romans;">Conversion Tool</a>
     </nav>
-    <!--Jinja that allows error or confirmation messages to be flashed-->
-      {% with messages = get_flashed_messages(with_categories=True) %}
-      {% if messages %}   
-        {% for category, message in messages %}
-        {% if category == "error" %}
-        <div class="alert alert-danger alter-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% else %}
-        <div class="alert alert-success alter-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endif %}
-   
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+ <!--Jinja that allows error or confirmation messages to be flashed-->
+ {% with messages = get_flashed_messages(with_categories=True) %}
+ {% if messages %}
+ {% for category, message in messages %}
+   {% if category == "error" %}
+     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+       {{ message }}
+       <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+   {% else %}
+     <div class="alert alert-success alert-dismissible fade show" role="alert">
+       {{ message }}
+       <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+         <span aria-hidden="true">&times;</span>
+       </button>
+     </div>
+   {% endif %}
+ {% endfor %}
+{% endif %}
+{% endwith %}
     <div class="container" style="font-family: Times New Romans; margin-top: 20px; padding-top: 10px; padding-bottom: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.7); ">{% block content %}{% endblock %}</div>
 </body>
 </html>
