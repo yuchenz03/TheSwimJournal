@@ -27,65 +27,66 @@ def create_app():
     with app.app_context():
         db.create_all()
     
-    #Initializing values in my database  
-    #initializing values in the exercise table
-        newExercise = Exercise(name="Bench Press") #Add bench press exercise
-        db.session.add(newExercise) #add this exercise to the database
-        newExercise = Exercise(name="Squat Pause") #Add squat pause exercise
-        db.session.add(newExercise) #add this exercise to the database
-        newExercise = Exercise(name="Hollow Hold") #Add hollow hold exercise
-        db.session.add(newExercise) #add this exercise to the database
-        db.session.commit() #save the database
-        
-        #initializing values in the event table
-        meterdistances = [25, 50, 100, 200, 400, 800, 1500] #types of distances available in meter pools
-        yarddistances = [25, 50, 100, 200, 500, 1000, 1600] #types of distances available in yard pools
-        strokes = ['Free', 'Back', 'Breast', 'Fly'] #the four strokes in swimming
-        genders = ['M', 'F'] #two different genders
-        events = [] #initializing events list
-        
-        #initializing the event swam in meter pools
-        for stroke in strokes: #for each stroke
-            for distance in meterdistances: #for each distance in a meter pool
-                for gender in genders: #for each gender
-                    events.append(Event(gender=gender, stroke=stroke, poolDistance="SCM", #add an event for SCM
-                                        distance=str(distance)+"m", baseTime=None))
-                    events.append(Event(gender=gender, stroke=stroke, poolDistance="LCM", #add an event for LCM
-                                        distance=str(distance)+"m", baseTime=None))
-            if stroke == "Free": #After free events have been appended
-                meterdistances = meterdistances[:4] #remove last four distances from list
-        
-        #initializing the events swam in yard pools
-        for stroke in strokes:
-            for distance in yarddistances:
-                for gender in genders:
-                    events.append(Event(gender=gender, stroke=stroke, poolDistance="SCY", 
-                                        distance=str(distance)+"y", baseTime=None))
-            if stroke == "Free":
-                yarddistances = yarddistances[:4]
-        
-        #separately initializing the IM events in both meters and yards
-        for gender in genders: 
-            events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
-                        distance="100m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
-                        distance="200m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
-                        distance="400m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="LCM", 
-                        distance="200m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="LCM", 
-                        distance="400m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
-                        distance="100m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
-                        distance="200m", baseTime=None))
-            events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
-                        distance="400m", baseTime=None))
-        print(len(events))
-        for event in events:
-            db.session.add(event)
-            db.session.commit()
+        first_record = Event.query.first()
+        if first_record == None:
+            #Initializing values in my database  
+            #initializing values in the exercise table
+            newExercise = Exercise(name="Bench Press") #Add bench press exercise
+            db.session.add(newExercise) #add this exercise to the database
+            newExercise = Exercise(name="Squat Pause") #Add squat pause exercise
+            db.session.add(newExercise) #add this exercise to the database
+            newExercise = Exercise(name="Hollow Hold") #Add hollow hold exercise
+            db.session.add(newExercise) #add this exercise to the database
+            db.session.commit() #save the database
+            
+            #initializing values in the event table
+            meterdistances = [25, 50, 100, 200, 400, 800, 1500] #types of distances available in meter pools
+            yarddistances = [25, 50, 100, 200, 500, 1000, 1600] #types of distances available in yard pools
+            strokes = ['Free', 'Back', 'Breast', 'Fly'] #the four strokes in swimming
+            genders = ['M', 'F'] #two different genders
+            events = [] #initializing events list
+            
+            #initializing the event swam in meter pools
+            for stroke in strokes: #for each stroke
+                for distance in meterdistances: #for each distance in a meter pool
+                    for gender in genders: #for each gender
+                        events.append(Event(gender=gender, stroke=stroke, poolDistance="SCM", #add an event for SCM
+                                            distance=str(distance)+"m", baseTime=None))
+                        events.append(Event(gender=gender, stroke=stroke, poolDistance="LCM", #add an event for LCM
+                                            distance=str(distance)+"m", baseTime=None))
+                if stroke == "Free": #After free events have been appended
+                    meterdistances = meterdistances[:4] #remove last four distances from list
+            
+            #initializing the events swam in yard pools
+            for stroke in strokes:
+                for distance in yarddistances:
+                    for gender in genders:
+                        events.append(Event(gender=gender, stroke=stroke, poolDistance="SCY", 
+                                            distance=str(distance)+"y", baseTime=None))
+                if stroke == "Free":
+                    yarddistances = yarddistances[:4]
+            
+            #separately initializing the IM events in both meters and yards
+            for gender in genders: 
+                events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
+                            distance="100m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
+                            distance="200m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
+                            distance="400m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="LCM", 
+                            distance="200m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="LCM", 
+                            distance="400m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
+                            distance="100m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
+                            distance="200m", baseTime=None))
+                events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
+                            distance="400m", baseTime=None))
+            for event in events:
+                db.session.add(event)
+                db.session.commit()
 
     login_manager = LoginManager() #Initializes a login manager - allows logins to happen
     login_manager.login_view = 'auth.login' #Set the default login to the login endpoint in auth blueprint
