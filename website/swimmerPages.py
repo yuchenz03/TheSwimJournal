@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify #From the flask application, import Blueprint
 from . import db
-from .models import User
+from .models import User, Session #, Event, Goals, Times
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 import sqlite3
@@ -10,6 +10,7 @@ import json
 swimmerpages = Blueprint("swimmerPages", __name__)
 
 ### Pages for the swimmers ###
+
 @login_required
 @swimmerpages.route("/Dashboard ") 
 def swimmerDashboard():
@@ -18,23 +19,22 @@ def swimmerDashboard():
         name=current_user.forename.capitalize()
     else:
         name=""
-    return render_template("swimmerDashboard.html", name = name) #, name = name
+    return render_template("swimmerDashboard.html", name = name) 
    
 
 @login_required
 @swimmerpages.route("/Session", methods=['GET', 'POST']) 
 def swimmerSession():
     # if request.method == 'POST': 
-    #     entry = request.form.get('entry')#Gets the entry from the HTML 
+        # entry = request.form.get('entry')#Gets the entry from the HTML 
         
-    #     if len(entry) < 1:
-    #         flash('Entry is too short!', category='error') 
-    #     else:
-    #         pass
-    #         # new_entry = Journal(entry=entry, user_id=current_user.id)  #providing the schema for the note 
-    #         # db.session.add(new_entry) #adding the note to the database 
-    #         # db.session.commit()
-    #         # flash('Entry added!', category='success')
+        # if len(entry) < 1:
+        #     flash('Entry is too short!', category='error') 
+        # else:
+        #     new_entry = Session(entry=entry, user_id=current_user.id)  #providing the schema for the note 
+        #     db.session.add(new_entry) #adding the note to the database 
+        #     db.session.commit()
+        #     flash('Entry added!', category='success')
     return render_template("swimmerSession.html", user=current_user)
 
 @login_required
@@ -68,60 +68,23 @@ def swimmerSettings():
         return redirect(url_for('swimmerPages.swimmerSettings'))
     return render_template("swimmerSettings.html", user=current_user)
 
-@login_required
-@swimmerpages.route("/Journal", methods=["GET","POST"]) 
-def swimmerJournal():
-    # if request.method == 'POST': 
-    #     entry = request.form.get('entry')#Gets the entry from the HTML 
+# @login_required
+# @swimmerpages.route("/Goals", methods=["GET","POST"]) 
+# def swimmerGoals():
+#     if request.method == 'POST': 
+#         goal = request.form.get('goal') #Gets the goal from the HTML 
+#         goaltype = request.form.get('goaltype')
         
-    #     if len(entry) < 1:
-    #         flash('Entry is too short!', category='error') 
-    #     else:
-    #         pass
-    #         # new_entry = Journal(entry=entry, user_id=current_user.id)  #providing the schema for the note 
-    #         # db.session.add(new_entry) #adding the note to the database 
-    #         # db.session.commit()
-    #         # flash('Entry added!', category='success')
-            
-    return render_template("swimmerJournal.html", user=current_user)
+#         if len(goal) < 1:
+#             flash('Goal is too short!', category='error') 
+#         else:
+#             new_note = Goals(data=goal, user_id=current_user.id, goaltype=goaltype)  #providing the schema for the note 
+#             db.session.add(new_note) #adding the note to the database 
+#             db.session.commit()
+#             flash('Goal added!', category='success')
+#     return render_template("swimmerGoals.html", user=current_user)
 
-#Used to delete goals
-@swimmerpages.route('/delete-entry', methods=['POST'])
-def delete_entry():  
-    entry = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
-    entryID = entry['entryID']
-    
-    # entry = Journal.query.get(entryID)
-    # if entry:
-    #     if entry.user_id == current_user.id:
-    #         db.session.delete(entry)
-    #         db.session.commit()
-
-    return jsonify({})
-
-@login_required
-@swimmerpages.route("/Attendance") 
-def swimmerAttendance():
-    return render_template("swimmerAttendance.html")
-
-@login_required
-@swimmerpages.route("/Goals", methods=["GET","POST"]) 
-def swimmerGoals():
-    # if request.method == 'POST': 
-    #     goal = request.form.get('goal') #Gets the goal from the HTML 
-    #     goaltype = request.form.get('goaltype')
-        
-    #     if len(goal) < 1:
-    #         flash('Goal is too short!', category='error') 
-    #     else:
-    #         pass
-    #         # new_note = Goals(data=goal, user_id=current_user.id, goaltype=goaltype)  #providing the schema for the note 
-    #         # db.session.add(new_note) #adding the note to the database 
-    #         # db.session.commit()
-    #         # flash('Goal added!', category='success')
-    return render_template("swimmerGoals.html", user=current_user)
-
-#Used to delete goals
+# # Used to delete goals
 # @swimmerpages.route('/delete-goal', methods=['POST'])
 # def delete_goal():  
 #     goal = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
@@ -134,22 +97,23 @@ def swimmerGoals():
 
 #     return jsonify({})
 
-@login_required
-@swimmerpages.route("/PBs", methods={'GET','POST'}) 
-def swimmerPBs():
-    # if request.method == 'POST': 
-    #     event = request.form.get('event')
-    #     competition = request.form.get('competition')
-    #     time = request.form.get('time')#Gets the goal from the HTML 
+# @login_required
+# @swimmerpages.route("/PBs", methods={'GET','POST'}) 
+# def swimmerPBs():
+#     events = Event.query.all()
+#     if request.method == 'POST': 
+#         event = request.form.get('event')
+#         competition = request.form.get('competition')
+#         time = request.form.get('time')#Gets the goal from the HTML 
         
-    #     if len(event) < 1:
-    #         flash('Invalid entry!', category='error') 
-    #     else:
-    #         new_note = Times(event = event, time = time, competition = competition, user_id=current_user.id)  #providing the schema for the note 
-    #         db.session.add(new_note) #adding the note to the database 
-    #         db.session.commit()
-    #         flash('Time added!', category='success')
-    return render_template("swimmerPBs.html", user=current_user)
+#         if len(event) < 1:
+#             flash('Invalid entry!', category='error') 
+#         else:
+#             new_note = Times(event = event, time = time, competition = competition, user_id=current_user.id)  #providing the schema for the note 
+#             db.session.add(new_note) #adding the note to the database 
+#             db.session.commit()
+#             flash('Time added!', category='success')
+#     return render_template("swimmerPBs.html", user=current_user, events=events)
 
 # #Used to delete times
 # @swimmerpages.route('/delete-time', methods=['POST'])

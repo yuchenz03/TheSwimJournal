@@ -47,10 +47,10 @@ fetch("/delete-time", {
 {% block content %}
 <h1>Personal Bests</h1>
 <ul class="list-group list-group-flush" id="times">
-    {% for time in user.times %}
+    {% for event in events %}
         <table>
             <tr>
-                <th>{{time.event}}</th>
+                <th>{{event.distance+event.stroke}}</th>
                 <th>
                     {{time.time}} 
                 </th>

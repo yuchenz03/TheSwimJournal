@@ -1,6 +1,3 @@
-###CORRECTED###
-
-
 from website import create_app, create_database #From the website folder, import the function create app
 
 if __name__ == "__main__": #If we are running this file purely for the content in this file, then

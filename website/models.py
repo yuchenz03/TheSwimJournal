@@ -15,27 +15,26 @@ class SwimmerSession(db.Model):
     urineColour = db.Column(db.Integer) #1-5 1 being light yellow, 5 being orange
 
 class SessionWorkout(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    reps = db.Column(db.Integer)
-    exerciseID = db.Column(db.Integer, db.ForeignKey('exercise.id'))
-    sessionID = db.Column(db.Integer, db.ForeignKey('session.id'))
-    
+    name = db.Column(db.String(200), primary_key=True) #name of the workout
+    reps = db.Column(db.String(200)) #number of repetitions of the exercise
+    exerciseID = db.Column(db.Integer, db.ForeignKey('exercise.id'), primary_key=True) #exercise ID
+    sessionID = db.Column(db.Integer, db.ForeignKey('session.id')) #SessionID
+
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
-    sessionWorkout = db.relationship('SessionWorkout', backref="exercise")
-    
+    name = db.Column(db.String(200)) #name of exercise
+    sessionWorkout = db.relationship('SessionWorkout') #relationship with sessionworkout table
+
 class Squad(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    squadName = db.Column(db.String(150), unique=True) #words
+    id = db.Column(db.Integer, primary_key=True) 
+    squadName = db.Column(db.String(150), unique=True) #name of squad
     user = db.relationship('User', backref="squad") #a backref relationship with the session table
-    squadCoaches = db.relationship('SquadCoach', backref="squad")
-    session = db.relationship('Session', backref="squad")
+    squadCoaches = db.relationship('SquadCoach', backref="squad") #backref relationship with coaches of the squad
+    session = db.relationship('Session', backref="squad") #backref relationship with session
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime(timezone=True), default=func.now)
+    date = db.Column(db.DateTime(timezone=True), default=func.now) #default date is current date
     time = db.Column(db.String(150)) #AM/ PM
     journal = db.Column(db.String(1000)) #paragraph
     squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
@@ -78,15 +77,13 @@ class Competitionrecord(db.Model):
     splits = db.relationship('Split', backref="competitionrecord")
     eventID = db.Column(db.Integer, db.ForeignKey('event.id'))
     
-    
 class Competition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200)) #Competition name
     date = db.Column(db.DateTime(timezone=True), default=func.now()) #date of competition
     poolLength = db.Column(db.String(3)) #SCM, SCY, LCM
-    competitionRecord = db.relationship('Competitionrecord', backref="competition")  ####### CHECK IF YOU NEED RELATIONSHIP ######
+    competitionRecord = db.relationship('Competitionrecord', backref="competition") 
     
-
 class Split(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     competitionRecord = db.Column(db.Integer, db.ForeignKey('competitionrecord.id')) #foreign key for competitionrecord
@@ -100,6 +97,3 @@ class Event(db.Model):
     poolDistance = db.Column(db.String(3)) #SCM, SCY, LCM
     distance = db.Column(db.String(50)) #100m, 200y, etc. 
     baseTime = db.Column(db.Float) #base time retrieved from world aquatics website - SCM
-    
-
-    ####### USE __tablename__ #######
