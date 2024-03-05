@@ -21,21 +21,21 @@ def isValid(password):
     return letter and digit and specialChar 
 
 #Route for the coach's dashboard page
-@coachpages.route("/Dashboard")  
+@coachpages.route("/TodaySession")  
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachDashboard():
+def coachTodaySession():
     user = User.query.filter_by(id=current_user.id).first() #ensure that a user with the current user's id exists
     if user: #If the user exists
         name=current_user.forename.capitalize() #retrieve the forename of the current user
     else: #if the user doesn't exist
         name="" #pass in empty string
-    return render_template("coachDashboard.html", name=name) #render the coach dashboard template
+    return render_template("coachTodaySession.html", name=name) #render the coach dashboard template
 
 #Route for the coach session page, supporting the post and get methods
-@coachpages.route("/Session", methods=['POST','GET'])
-@login_required#decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachSessions():
-    return render_template("coachSessions.html")
+@coachpages.route("/PreviousSessions", methods=['POST','GET'])
+@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
+def coachPreviousSessions():
+    return render_template("coachPreviousSessions.html")
 
 
 #Route for the coach workouts page, supporting the post and get methods
@@ -117,7 +117,7 @@ def coachWorkouts():
         return redirect(url_for('coachPages.coachWorkout')) #refresh page
     
     #rendering the coach session page
-    return render_template("coachWorkout.html", user = current_user, exercises = exercises)
+    return render_template("coachWorkouts.html", user = current_user, exercises = exercises)
 
 #Used to delete exercises
 @coachpages.route('/delete-exercise', methods = ['POST'])
@@ -131,9 +131,10 @@ def delete_exercise():
     return jsonify({}) #return empty input to index file
 
 #route for the coach's my swimmers page, supporting get and post methods
-@coachpages.route("/MySwimmers", methods = {'GET', 'POST'}) 
+@coachpages.route("/Squads", methods = {'GET', 'POST'}) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachSwimmers():
+def coachSquads():
+    
     if current_user.squadID: #If the current user is part of a squad
         squadid = current_user.squadID 
         squad = Squad.query.get(squadid)
@@ -171,7 +172,7 @@ def coachSwimmers():
         
             squad = Squad.query.get(squad_id)
 
-    return render_template("coachSwimmers.html", user=current_user, squad=squad,members=members)
+    return render_template("coachSquads.html", user=current_user, squad=squad, members=members)
 
 
 @coachpages.route("/Settings", methods=['GET', 'POST']) 
@@ -206,3 +207,23 @@ def coachSettings():
         flash('User information updated successfully.', 'success') #flash confirmation message
         return redirect(url_for('coachPages.coachSettings')) #refresh page
     return render_template("coachSettings.html", user=current_user) #render coach settings template
+
+@coachpages.route("/Goals", methods=['GET', 'POST']) 
+@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
+def coachGoals(): 
+    return render_template("coachGoals.html") #render coach goals template
+
+@coachpages.route("/BaseTimes", methods=['GET', 'POST']) 
+@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
+def coachBaseTimes(): 
+    return render_template("coachBaseTimes.html") #render coach base times template
+
+@coachpages.route("/BestTimes", methods=['GET', 'POST']) 
+@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
+def coachBestTimes(): 
+    return render_template("CoachBestTimes.html", user=current_user) #render coach best times template
+
+@coachpages.route("/Competitions", methods=['GET', 'POST']) 
+@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
+def coachCompetitions(): 
+    return render_template("coachCompetitions.html", user=current_user) #render coach goals template

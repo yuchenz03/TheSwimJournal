@@ -1,6 +1,6 @@
 {% extends "coachBase.html" %}
 {% block title %}
-The Swim Journal | Session
+The Swim Journal | Workouts
 {% endblock %}
 
 <!--Javascript used to delete a variable-->
@@ -19,15 +19,15 @@ The Swim Journal | Session
 </script>
 
 {% block content %}
-<h1>Today's Session</h1>
+<h1>My Workouts</h1>
+<!--displaying the past workouts and providing a template to create new workouts-->
 <div class="container" style="display: grid; grid-template-columns: 1fr 1fr;">
 <div class="left", style="padding:10px">
-<h3>Create new session</h3>
+<h3>View past workouts</h3>
+<h3>Create new workout</h3>
   <form method="POST">
-    <label for="date">Date:</label>
-      <input name="name" id="name" type="date" class="form-control">
-    <label for="date">Time:</label>
-      <input name="name" id="name" type="time" class="form-control">
+    <label for="name">Workout Name:</label>
+      <input name="name" id="name" class="form-control">
     {% for i in range(10) %}
     <label for="ex1">Select Exercise:</label>
       <select name='{{ "ex" + loop.index|string }}' id='{{ "ex" + loop.index|string }}' class="form-control">
@@ -44,6 +44,7 @@ The Swim Journal | Session
     </div>
   </form>
 </div>
+<!--HTML code to edit and create new exercises-->
 <div class="right", style="padding:10px">
   <h3>Edit exercises</h3>
   <h5>Create new exercise</h5>
@@ -55,10 +56,12 @@ The Swim Journal | Session
   </div>
   </form>
   <h5>All exercises</h5>
+  <!--Displaying all the current exercises within the database-->
   <ul class="list-group list-group-flush" id="exercises">
       {% for exercise in exercises %}
       <li class="list-group-item">
         {{ exercise.name }}
+      <!--Button that allows the deletion of exercises-->
       <button type="button" class="close" onClick="deleteExercise('{{ exercise.id }}')">
         <span aria-hidden="true">&times;</span>
       </button>

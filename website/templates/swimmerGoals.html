@@ -2,7 +2,9 @@
 {% block title %}
 The Swim Journal | Goals
 {% endblock %}
-{% block sidenav %}
+
+{% block content %}
+
 <!--This is used in the delete function-->
 <script type="text/javascript">
   function deleteGoal(goalID) {
@@ -14,31 +16,9 @@ window.location.href = "/swimmerGoals";
 });
 }
 </script>
-    <!--This is the side navbar-->
-    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 140px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
-      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/swimmer/Session">
-        <span class=""nav-tiem">Today's Session</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Journal">
-        <span class=""nav-tiem">Journal</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Goals">
-        <span class=""nav-tiem">Goals</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/PBs">
-        <span class=""nav-tiem">Personal Bests</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Settings">
-        <span class=""nav-tiem">Account Settings</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
-        <span class=""nav-tiem">Logout</span>
-      </a>
-</nav>
-{% endblock %}
 
-{% block content %}
 <h1>Goals</h1>
+<!--Jinja that loops through each goal and allows them to be displayed in a table-->
 <ul class="list-group list-group-flush" id="goals">
     {% for goal in user.goals %}
     <li class="list-group-item">
@@ -50,6 +30,7 @@ window.location.href = "/swimmerGoals";
     {% endfor %}
   </ul>   
   <form method="POST">
+    <!--Adding a goal-->
     <label for="goaltype">Select Goal Type:</label>
     <select name="goaltype" id="goaltype" class="form-control">
       <option value="Today">Today</option>

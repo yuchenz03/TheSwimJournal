@@ -1,0 +1,95 @@
+{% extends "swimmerBase.html" %}
+{% block title %}
+The Swim Journal | Dashboard
+{% endblock %}
+
+{% block content %}
+<h1>Session</h1>
+<div class="container" style="border: 1px solid #ccc; margin:0px; margin-bottom:20px; height: relative; border-radius: 15px; width:relative; position: relative">
+    <h2>Pre-session Questionnaire</h2>
+    <label for="sleep">Hours of sleep: <span id="sleepvalue"></span> </label>
+    <input type="range" id="sleep" name="sleep" min="0" max="9" step="1" value="8">
+    <span id="sleepvalue"></span>
+    <div>If you slept more than 9 hours of sleep, choose 9 hours</div>
+    <script>
+        // JavaScript to update the selected value when the slider changes
+        var slider1 = document.getElementById("sleep");
+        var output1 = document.getElementById("sleepvalue");
+        output1.innerHTML = slider1.value;
+        slider1.oninput = function() {
+            output1.innerHTML = this.value;
+        };
+    </script>
+    <label for="stress">Stress: <span id="stressvalue"></span> </label>
+    <input type="range" id="stress" name="stress" min="0" max="10" step="1" value="5">
+    <div>0 being least stressed, 10 being most stressed</div>
+    <script>
+        var slider2 = document.getElementById("stress");
+        var output2 = document.getElementById("stressvalue");
+        output2.innerHTML = slider2.value;
+        slider2.oninput = function() {
+            output2.innerHTML = this.value;
+        };
+    </script>
+    <label for="fatigue">Fatigue: <span id="fatiguevalue"></span></label>
+    <input type="range" id="fatigue" name="fatigue" min="0" max="10" step="1" value="5">
+    <div>0 being most fatigued, 10 being least fatigued</div>
+    <script>
+        var slider3 = document.getElementById("fatigue");
+        var output3 = document.getElementById("fatiguevalue");
+        output3.innerHTML = slider3.value;
+        slider3.oninput = function() {
+            output3.innerHTML = this.value;
+        };
+    </script>
+
+    <label for="hydration">Hydration: <span id="hydrationvalue"></span></p></label>
+    <input type="range" id="hydration" name="hydration" min="0" max="5" step="1" value="3">
+    <div>0 being feeling extremely thirsty, 5 being well-hydrated,</div>
+    <script>
+        var slider4 = document.getElementById("hydration");
+        var output4 = document.getElementById("hydrationvalue");
+        output4.innerHTML = slider4.value;
+        slider4.oninput = function() {
+            output4.innerHTML = this.value;
+        };
+    </script>
+
+    <hr>
+
+    <h2>Ability to Train</h2>
+    <button id="calculateButton">Calculate</button>
+    <p>Percentage: <span id="percentage">0</span></p>
+
+    <script>
+        // JavaScript to calculate the total score and display it when the button is clicked
+        calculateButton.onclick = function() {
+          var sleepValue = parseInt(document.getElementById("sleep").value);
+          var stressValue = parseInt(document.getElementById("stress").value);
+          var fatigueValue = parseInt(document.getElementById("fatigue").value); 
+          var hydrationValue = parseInt(document.getElementById("hydration").value);
+      
+          // Applying the formula
+          var ROF = ((10-stressValue) / 10 * 0.133333) + //ROF stands for rate of fatigue
+                    ((10-fatigueValue) / 10 * 0.133333) + 
+                    (hydrationValue / 5 * 0.133333) + 
+                    (sleepValue / 9 * 0.60);
+      
+          var calculatedPercentage = ROF * 100; // Convert to percentage
+      
+          percentage.innerHTML = calculatedPercentage.toFixed(2) + "%"; // Display percentage with two decimal places
+      };
+    </script>
+<!-- </div>
+<div class="container", style="border: 1px solid #ccc; margin:0px; height: 200px;border-radius: 15px; width:850px; position: relative"">
+  <h2>Post-session Thoughts</h2>
+  <form method="POST">
+    <textarea name="entry" id="entry" class="form-control"></textarea>
+    <br />
+    <div>
+      <button type="submit" class="btn btn-primary">Add Entry</button>
+    </div>
+  </form>
+</div> -->
+{% endblock %}
+

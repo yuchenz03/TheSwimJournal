@@ -1,3 +1,5 @@
+<!--This page is the coach sign-up page-->
+
 {% extends "authBase.html" %}
 {% block title %}
 The Swim Journal | Coach Signup
@@ -5,8 +7,10 @@ The Swim Journal | Coach Signup
 {% block content %}
 <div class="container" style="margin-top: 20px; margin-left:0px"></div>
 <form method="POST">
+  <!--A form that creates a new Coach user using the values inputted-->
     <h3>Coach Sign-Up</h3>
     <div class="form-group">
+      <!--Inputting forename-->
       <label for="forename">Forename</label>
       <input
         type="text"
@@ -15,6 +19,7 @@ The Swim Journal | Coach Signup
         class="form-control"
         placeholder="Enter Forename"
       />
+      <!--Inputting surname-->
       <label for="surname">Surname</label>
       <input
         type="text"
@@ -23,6 +28,7 @@ The Swim Journal | Coach Signup
         class="form-control"
         placeholder="Enter Surname"
       />
+      <!--Inputting email address-->
       <label for="email">Email Address</label>
       <input
         type="text"
@@ -31,6 +37,7 @@ The Swim Journal | Coach Signup
         class="form-control"
         placeholder="Enter Email"
       />
+      <!--Inputting password for the first time-->
       <label for="password1">Password</label>
       <input
         type="password"
@@ -39,6 +46,7 @@ The Swim Journal | Coach Signup
         class="form-control"
         placeholder="Enter Password"
       />
+      <!--Inputting password for the second time-->
       <label for="password2">Password Again</label>
       <input
         type="password"
@@ -49,10 +57,12 @@ The Swim Journal | Coach Signup
       />
       <br />
       <div>
+        <!--submit button-->
         <button class="btn btn-primary" type="submit">Sign Up</button>
       </div>
     </div>
   </form>
+  <!--A link to the alternate signup page - the swimmer sign up page-->
   <a href="/swimmerSignup">I'm a Swimmer</a>
 </div>
 {% endblock %}

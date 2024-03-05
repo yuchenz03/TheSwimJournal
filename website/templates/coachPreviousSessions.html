@@ -1,14 +1,14 @@
 {% extends "coachBase.html" %}
 {% block title %}
-The Swim Journal | Workouts
+The Swim Journal | Session
 {% endblock %}
 
 <!--Javascript used to delete a variable-->
 <script type="text/javascript">
-  //Define the function 'deleteExercise' which takes 'exerciseID' as a parameter
-  function deleteExercise(exerciseID) {
+  //Define the function 'deleteSession' which takes 'exerciseID' as a parameter
+  function deleteSession(sessionID) {
     //Use the Fetch API to send a request to the server
-    fetch("/delete-exercise", {
+    fetch("/delete-session", {
       method: "POST", //Specify the method as POST
       body: JSON.stringify({ exerciseID: exerciseID }),// Convert the exercise id object to a JSON string and set it as the request body
     })
@@ -19,14 +19,15 @@ The Swim Journal | Workouts
 </script>
 
 {% block content %}
-<h1>My Workouts</h1>
+<h1>Today's Session</h1>
 <div class="container" style="display: grid; grid-template-columns: 1fr 1fr;">
 <div class="left", style="padding:10px">
-<h3>View past workouts</h3>
-<h3>Create new workout</h3>
+<h3>Create new session</h3>
   <form method="POST">
-    <label for="name">Workout Name:</label>
-      <input name="name" id="name" class="form-control">
+    <label for="date">Date:</label>
+      <input name="name" id="name" type="date" class="form-control">
+    <label for="date">Time:</label>
+      <input name="name" id="name" type="time" class="form-control">
     {% for i in range(10) %}
     <label for="ex1">Select Exercise:</label>
       <select name='{{ "ex" + loop.index|string }}' id='{{ "ex" + loop.index|string }}' class="form-control">

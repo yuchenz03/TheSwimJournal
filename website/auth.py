@@ -1,7 +1,7 @@
 #importing all the dependencies
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from .models import User #importing the user class from the models page
-from werkzeug.security import generate_password_hash, check_password_hash #
+from werkzeug.security import generate_password_hash, check_password_hash 
 from . import db   #from __init__.py import db
 from flask_login import login_user, login_required, logout_user, current_user
 
@@ -35,9 +35,9 @@ def login():
                 flash('Logged in successfully!', category='success') #flash a success message
                 login_user(user, remember=True) #and login the user
                 if user.role == "Swimmer": #if the user's role is swimmer
-                    return redirect(url_for('swimmerPages.swimmerDashboard')) #redirect to the swimmer's dashboard
+                    return redirect(url_for('swimmerPages.swimmerTodaySession')) #redirect to the swimmer's main page
                 elif user.role == "Coach": #if the user's role is coach
-                    return redirect(url_for('coachPages.coachDashboard')) #redirect to the coach's dashboard
+                    return redirect(url_for('coachPages.coachTodaySession')) #redirect to the coach's main page
             else: #Otherwise, if the password is incorrect,
                 flash('Incorrect password, try again.', category='error') #flash an error message
         else: #if there doesn't exist a user with that email
@@ -59,9 +59,9 @@ def securityQuestion():
             current_user.SQans = SQans #set the user's security answer
             db.session.commit() #save these changes to the database
             if current_user.role == "Swimmer": #if user is a swimmer
-                return redirect(url_for('swimmerPages.swimmerDashboard')) #redirect to the swimmer's dashboard
+                return redirect(url_for('swimmerPages.swimmerTodaySession')) #redirect to the swimmer's main page
             elif current_user.role == "Coach": #if user is a coach
-                return redirect(url_for('coachPages.coachDashboard')) #redirect to the coach's dashboard
+                return redirect(url_for('coachPages.coachTodaySession')) #redirect to the coach's main page
     
     return render_template("securityQuestion.html", user=current_user) #render the security question page template
 

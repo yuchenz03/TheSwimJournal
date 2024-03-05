@@ -49,9 +49,21 @@ def create_app():
             #initializing the event swam in meter pools
             for stroke in strokes: #for each stroke
                 for distance in meterdistances: #for each distance in a meter pool
+                    if distance == 25 or distance == 50:
+                        numOfSplits = 0
+                    elif distance == 100:
+                        numOfSplits = 2
+                    elif distance == 200:
+                        numOfSplits = 4
+                    elif distance == 400:
+                        numOfSplits = 4
+                    elif distance == 800:
+                        numOfSplits = 8
+                    elif distance == 1500:
+                        numOfSplits = 15
                     for gender in genders: #for each gender
                         events.append(Event(gender=gender, stroke=stroke, poolDistance="SCM", #add an event for SCM
-                                            distance=str(distance)+"m", baseTime=None))
+                                            distance=str(distance)+"m", numOfSplits=numOfSplits, baseTime=None))
                         events.append(Event(gender=gender, stroke=stroke, poolDistance="LCM", #add an event for LCM
                                             distance=str(distance)+"m", baseTime=None))
                 if stroke == "Free": #After free events have been appended
@@ -60,30 +72,42 @@ def create_app():
             #initializing the events swam in yard pools
             for stroke in strokes:
                 for distance in yarddistances:
+                    if distance == 25 or distance == 50:
+                        numOfSplits = 0
+                    elif distance == 100:
+                        numOfSplits = 2
+                    elif distance == 200:
+                        numOfSplits = 4
+                    elif distance == 500:
+                        numOfSplits = 5
+                    elif distance == 1000:
+                        numOfSplits = 10
+                    elif distance == 1600:
+                        numOfSplits = 16
                     for gender in genders:
                         events.append(Event(gender=gender, stroke=stroke, poolDistance="SCY", 
-                                            distance=str(distance)+"y", baseTime=None))
+                                            distance=str(distance)+"y", numOfSplits=numOfSplits, baseTime=None))
                 if stroke == "Free":
                     yarddistances = yarddistances[:4]
             
             #separately initializing the IM events in both meters and yards
             for gender in genders: 
                 events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
-                            distance="100m", baseTime=None))
+                            distance="100m", numOfSplits=4, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
-                            distance="200m", baseTime=None))
+                            distance="200m", numOfSplits=4, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="SCM", 
-                            distance="400m", baseTime=None))
+                            distance="400m", numOfSplits=8, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="LCM", 
-                            distance="200m", baseTime=None))
+                            distance="200m", numOfSplits=4, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="LCM", 
-                            distance="400m", baseTime=None))
+                            distance="400m", numOfSplits=8, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
-                            distance="100m", baseTime=None))
+                            distance="100m", numOfSplits=4, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
-                            distance="200m", baseTime=None))
+                            distance="200m", numOfSplits=4, baseTime=None))
                 events.append(Event(gender=gender, stroke="IM", poolDistance="SCY", 
-                            distance="400m", baseTime=None))
+                            distance="400m", numOfSplits=8, baseTime=None))
             for event in events:
                 db.session.add(event)
                 db.session.commit()

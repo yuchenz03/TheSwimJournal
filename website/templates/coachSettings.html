@@ -1,9 +1,13 @@
+<!--This page is the coach settings page-->
+
 {% extends "coachBase.html" %}
 {% block title %}
 The Swim Journal | Settings
 {% endblock %}
     
 {% block content %}
+<!--A form that displays then inputs any changes to the user's settings-->
+<!--First input box: forename-->
 <h1>Edit Account Details</h1>
     <form method="POST">
         <div class="form-group">
@@ -16,6 +20,7 @@ The Swim Journal | Settings
             class="form-control"
             />
         </div>
+        <!--Second input box: surname-->
         <div class="form-group">
             <label for="surname">Last Name:</label>
             <input 
@@ -26,6 +31,7 @@ The Swim Journal | Settings
             class="form-control"
             />
         </div>
+        <!--Third input box: password-->
         <div class="form-group">
           <label for="password1">Password:</label>
           <input 
@@ -35,6 +41,7 @@ The Swim Journal | Settings
           class="form-control"
           />
         </div>
+        <!--Fourth input box: confirmation of change of password-->
         <div class="form-group">
             <label for="password2">Password Again:</label>
             <input 
@@ -44,6 +51,7 @@ The Swim Journal | Settings
             class="form-control"
             />
         </div>
+        <!--A submit button-->
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 {% endblock %}

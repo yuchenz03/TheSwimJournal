@@ -1,4 +1,4 @@
-<!--CORRECTED-->
+<!--This page acts as a base page to the sign up and login pages-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,15 +21,16 @@
   <!--The below line is used to allow javascript to be used -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   
-  <title>{% block title %}{% endblock %}</title> <!--This line allows children templates to inherit this base template and then change the content within the blocks-->
+  <title>{% block title %}{% endblock %}</title> <!--This line allows children pages to have their own individual title-->
 </head>
 
+<!--Setting the background picture of the website when logging in-->
 <style>
     body {
     position: relative;
     height: 100vh;
     margin: 0;
-    background-image: url('../static/pool.jpg');
+    background-image: url('../static/pool.jpg'); /*the name of the image is pool.jpg*/
     background-size: cover;
     background-repeat: no-repeat;
     align-items: center;
@@ -38,7 +39,7 @@
 
 
 <body>     
-    <!--This is the navbar-->
+    <!--This is the top navbar-->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
     <nav class="navbar navbar-expand-md navbar-light" style="background-color: #E4FCFF; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
@@ -46,20 +47,19 @@
         <!--These are the links for each page/ redirectory shown in the nav bar-->
         <a class="nav-item nav-link" href="/login", style="color:black ;font-family: Times New Romans;">Login</a>
         <a class="nav-item nav-link" href="/coachSignup", style="color:black;font-family: Times New Romans;">Sign up</a>
-        <a class="nav-item nav-link" href="/conversionTool", style="color:black;font-family: Times New Romans;">Conversion Tool</a>
     </nav>
  <!--Jinja that allows error or confirmation messages to be flashed-->
  {% with messages = get_flashed_messages(with_categories=True) %}
  {% if messages %}
  {% for category, message in messages %}
-   {% if category == "error" %}
+   {% if category == "error" %} <!--If the message type is error, then use the following-->
      <div class="alert alert-danger alert-dismissible fade show" role="alert">
        {{ message }}
        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
          <span aria-hidden="true">&times;</span>
        </button>
      </div>
-   {% else %}
+   {% else %} <!--If the message type is not error, then use the following-->
      <div class="alert alert-success alert-dismissible fade show" role="alert">
        {{ message }}
        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
@@ -70,6 +70,7 @@
  {% endfor %}
 {% endif %} 
 {% endwith %}
+     <!--This line allows children pages to have their own individual content-->
     <div class="container" style="font-family: Times New Romans; margin-top: 20px; padding-top: 10px; padding-bottom: 20px; border-radius: 20px; background-color: rgba(255, 255, 255, 0.7); ">{% block content %}{% endblock %}</div>
 </body>
 </html>

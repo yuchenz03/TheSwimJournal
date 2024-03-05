@@ -32,6 +32,7 @@
     <div class="container" style="font-family: Times New Roman; position: absolute; top: 90px; left: 140px">
       {% block content %}{% endblock %}
     </div>
+    <!--Jinja code that allows confirmation and error messages to be flashed-->
     {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}   
       {% for category, message in messages %}
@@ -50,7 +51,7 @@
     {% endif %}
   {% endwith %}
 
-
+<!--A form that allows the user to enter their email to reset their password-->
   <div class="container" style="margin-top: 20px; margin-left:0px"></div>
   <form method="POST">
       <h3>Reset Password</h3>
@@ -64,6 +65,7 @@
           placeholder="Email"
         />
         <div>
+          <!--Submit button for the form-->
           <button class="btn btn-primary" type="submit">Submit</button>
         </div>
       </div>

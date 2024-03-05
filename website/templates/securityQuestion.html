@@ -5,6 +5,7 @@ The Swim Journal | Security Question
 {% block content %}
 <div class="container" style="margin-top: 20px; margin-left:0px">
     <form method="POST">
+      <!--The form containing all the possible security questions-->
         <label for="SQquestion">Select Security Question:</label>
         <select name="SQquestion" id="SQquestion" class="form-control">
           <option value="What is the name of your first dog?">What is the name of your first dog?</option>
@@ -14,9 +15,11 @@ The Swim Journal | Security Question
           <option value="What was the first exam you failed?">What was the first exam you failed?</option>
 8        </select>
         Your answer:
+        <!--Asking the user to input a correct answer to the security question-->
         <input name="SQanswer" id="SQanswer" class="form-control">
         <br/>
         <div>
+          <!--A submit button for the form-->
           <button type="submit" class="btn btn-primary">Submit security question</button>
         </div>
       </form>
