@@ -1,11 +1,12 @@
 #importing all the dependencies
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify #From the flask application, import Blueprint
 from . import db
-from .models import User, Exercise, Squad, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
+from .models import User, Exercise, Squad, SessionWorkoutExercises, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 from random import randint
 import json
+import datetime
 
 #define a new blueprint named coachPages
 coachpages = Blueprint("coachPages", __name__)
@@ -38,86 +39,25 @@ def coachPreviousSessions():
     return render_template("coachPreviousSessions.html")
 
 
-#Route for the coach workouts page, supporting the post and get methods
-@coachpages.route("/Workouts", methods=['POST','GET']) 
+@coachpages.route("/Exercises", methods=['POST','GET'])
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachWorkouts():
+def coachExercises():
     exercises = Exercise.query.all()
-    if request.method == 'POST': 
-        #information from editing exercises
-        newExercises = request.form.get('newExerciseName') #gets the new exercises from the form
-        workoutName = request.form.get('name') #workout name retrieved from form
-        ex1 = request.form.get('ex1') #gets the exercises from the form 
-        rep1 = request.form.get('rep1') #gets the number of repetitions from the form
-        ex2 = request.form.get('ex2') 
-        rep2 = request.form.get('rep2') 
-        ex3 = request.form.get('ex3') 
-        rep3 = request.form.get('rep3') 
-        ex4 = request.form.get('ex4') 
-        rep4 = request.form.get('rep4')
-        ex5 = request.form.get('ex5')
-        rep5 = request.form.get('rep5')
-        ex6 = request.form.get('ex6') 
-        rep6 = request.form.get('rep6')
-        ex7 = request.form.get('ex7') 
-        rep7 = request.form.get('rep7')
-        ex8 = request.form.get('ex8') 
-        rep8 = request.form.get('rep8')
-        ex9 = request.form.get('ex9') 
-        rep9 = request.form.get('rep9') 
-        ex10 = request.form.get('ex10')
-        rep10 = request.form.get('rep10')
-        
+    if request.method == 'POST':
+        newExercise = request.form.get('newExerciseName') #gets the new exercises from the form
         #Adding a new exercise
-        if newExercises != None:
-            newExercises = newExercises.split(',') #extract the individual exercise names and store in a list
-            for exercise in newExercises: #looping through new exercises
-                exerciseExists = Exercise.query.filter_by(name=exercise).first()
-                if not exerciseExists:
-                    db.session.add(Exercise(name=exercise.strip())) #looping through exercises and storing stripped information
-                    db.session.commit() #saving the database
-                else:
-                    newExercises.remove(exercise)
-                    flash(f'{exercise} already added.', category='error')
-            if len(newExercises) != 0:
+        if newExercise != None:
+            exerciseExists = Exercise.query.filter_by(name=newExercise).first()
+            if not exerciseExists:
+                db.session.add(Exercise(name=newExercise.strip())) #stripping values before storing them
+                db.session.commit() #saving the database
                 flash('Exercises added!', category='success')
-        else: #if no new exercises will be added and a new workout will be made
-            if workoutName: #if there is a workout name 
-                if ex1 and rep1: #if the exercise and repetitions form aren't empty
-                    ex = Exercise.query.filter_by(name=ex1).first() #then add the exercise to the workout
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep1, exerciseID=ex.ID, sessionID=1))
-                if ex2 and rep2:
-                    ex = Exercise.query.filter_by(name=ex2).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep2, exerciseID=ex.ID, sessionID=1))
-                if ex3 and rep3:
-                    ex = Exercise.query.filter_by(name=ex3).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep3, exerciseID=ex.ID, sessionID=1))
-                if ex4 and rep4:
-                    ex = Exercise.query.filter_by(name=ex4).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep4, exerciseID=ex.ID, sessionID=1))
-                if ex5 and rep5:
-                    ex = Exercise.query.filter_by(name=ex5).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep5, exerciseID=ex.ID, sessionID=1))
-                if ex6 and rep6:
-                    ex = Exercise.query.filter_by(name=ex6).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep6, exerciseID=ex.ID, sessionID=1))
-                if ex7 and rep7:
-                    ex = Exercise.query.filter_by(name=ex7).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep7, exerciseID=ex.ID, sessionID=1))
-                if ex8 and rep8:
-                    ex = Exercise.query.filter_by(name=ex8).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep8, exerciseID=ex.ID, sessionID=1))
-                if ex9 and rep9:
-                    ex = Exercise.query.filter_by(name=ex9).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep9, exerciseID=ex.ID, sessionID=1))
-                if ex10 and rep10:
-                    ex = Exercise.query.filter_by(name=ex10).first()
-                    db.session.add(SessionWorkout(name=workoutName, reps=rep10, exerciseID=ex.ID, sessionID=1))
-                db.session.commit() #save the database
-        return redirect(url_for('coachPages.coachWorkout')) #refresh page
-    
-    #rendering the coach session page
-    return render_template("coachWorkouts.html", user = current_user, exercises = exercises)
+                return redirect(url_for('coachPages.coachExercises')) #refresh page
+            else:
+                flash(f'{newExercise} already added.', category='error')
+                
+    return render_template("coachExercises.html", exercises=exercises )
+
 
 #Used to delete exercises
 @coachpages.route('/delete-exercise', methods = ['POST'])
@@ -129,6 +69,54 @@ def delete_exercise():
         db.session.delete(exercise) #delete this exercise
         db.session.commit() #save the database
     return jsonify({}) #return empty input to index file
+
+
+#Route for the coach workouts page, supporting the post and get methods
+@coachpages.route("/Workouts", methods=['POST','GET']) 
+@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
+def coachWorkouts():
+    if request.method == 'POST': 
+        workoutName = request.form.get('name') #workout name retrieved from form
+        workoutExercises = request.form.get('workoutExercises') #exercises in the workout retrieved from form
+        workoutNotes = request.form.get('workoutNotes')
+        workoutType = request.form.get('workoutType')
+        
+        if workoutName:
+            workoutExists = SessionWorkout.query.filter_by(name=workoutName).first()
+            if not workoutExists:
+                if workoutType == 'land':
+                    db.session.add(SessionWorkout(name=workoutName, notes=workoutNotes, workoutType=workoutType))
+                    db.session.commit() #saving the database
+                        #Adding a new exercise
+                    if workoutExercises:
+                        currentworkout = SessionWorkout.query.filter_by(name=workoutName).first()
+                        workoutExercises = workoutExercises.split('\n') #extract the individual exercise names and reps and store in a list
+                        for workoutExercise in workoutExercises: #looping through exercises
+                            workoutExercise = workoutExercise.split(",")
+                            exercise = workoutExercise[0].strip()
+                            exercise = exercise.capitalize()
+                            exercise = Exercise.query.filter_by(name=exercise)
+                            if exercise:
+                                try:
+                                    repetitions = int(workoutExercise[1].strip())
+                                except ValueError:
+                                    flash('Please enter repetitions as an integer.', category='error')
+                                    return redirect(url_for('coachPages.coachWorkouts'))
+                                db.session.add(SessionWorkoutExercises(reps=repetitions,exerciseID=exercise.id,sessionWorkoutID=currentworkout.id))
+                                db.session.commit() #saving the database
+                            else:
+                                flash('Exercise does not exist in database.', category='error')
+                else:
+                    db.session.add(SessionWorkout(name=workoutName, notes=workoutNotes, workoutType=workoutType, workoutDescription=workoutExercises))
+                    db.session.commit() #saving the database
+            else:
+                flash('Workout name already in use.', category='error')
+        if (len(workoutExercises)!=0 or len(workoutNotes)!=0 or len(workoutType)!=0)and len(workoutName)==0:
+            flash('Cannot create workout without name.', category='error')
+        return redirect(url_for('coachPages.coachWorkouts')) #refresh page
+    
+    #rendering the coach session page
+    return render_template("coachWorkouts.html", user = current_user)
 
 #route for the coach's my swimmers page, supporting get and post methods
 @coachpages.route("/Squads", methods = {'GET', 'POST'}) 
@@ -148,7 +136,7 @@ def coachSquads():
             memberSquads.extend([squad.squadName]*len(members))
     else: #if there are no squads that the user is part of
         squads=[]
-        members=[]
+        allMembers=[]
         memberSquads=[]
         
     if request.method == 'POST': #if there are inputs
@@ -160,7 +148,7 @@ def coachSquads():
         elif len(squadName) < 2: #if the squadname is less than 2
             flash("Squad name too short.", category="error") #flash an error message
         else: 
-            flash("Squad successfully created! Please refresh to update table.") #flash confirmation message
+            flash("Squad successfully created! ") #flash confirmation message
             squadCode = randint(1000,9999) #generate a random 4 digit squadCode
             new_squad = Squad(id=squadCode, squadName=squadName) #create a new squad
             db.session.add(new_squad) #add to database
@@ -170,6 +158,7 @@ def coachSquads():
             userSquad = SquadMembers(squadID=squadCode, userID=current_user.id)
             db.session.add(userSquad)
             db.session.commit()
+            return redirect(url_for('coachPages.coachSquads')) #refresh page
     return render_template("coachSquads.html", user=current_user, squads=squads, members=allMembers, memberSquads=memberSquads)
 
 
@@ -209,7 +198,23 @@ def coachSettings():
 @coachpages.route("/Goals", methods=['GET', 'POST']) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachGoals(): 
-    return render_template("coachGoals.html") #render coach goals template
+    today = datetime.date.today()
+    year = today.year
+    squadMemberIDs = SquadMembers.query.filter_by(userID=current_user.id).all() #query the datbase for a user with the provided id
+    if squadMemberIDs: #If the current user is part of a squad
+        allMembers = []
+        squads = []
+        for squadMemberID in squadMemberIDs:
+            squad = Squad.query.filter_by(id=squadMemberID.squadID).first()
+            squads.append(squad)
+            members = SquadMembers.query.filter_by(squadID=squadMemberID.squadID).all()
+            for member in members:
+                chosenuser = User.query.filter_by(id=member.userID).first()
+                if chosenuser.role == "swimmer": 
+                    allMembers.append(chosenuser)
+    else:
+        allMembers = []
+    return render_template("coachGoals.html", members=allMembers, year=year) #render coach goals template
 
 @coachpages.route("/BaseTimes", methods=['GET', 'POST']) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page

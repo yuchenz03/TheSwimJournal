@@ -1,3 +1,3 @@
-list1 = []
-list1.extend([10]*4)
-print(list1)
+list1 = ["h","e"]
+print(' '.join(list1))
+print('hello world'.capitalize())

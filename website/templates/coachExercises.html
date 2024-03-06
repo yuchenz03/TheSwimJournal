@@ -1,0 +1,42 @@
+{% extends "coachBase.html" %}
+{% block title %}
+The Swim Journal | Exercises
+{% endblock %}
+
+<!--Javascript used to delete a variable-->
+<script type="text/javascript">
+  //Define the function 'deleteExercise' which takes 'exerciseID' as a parameter
+  function deleteExercise(exerciseID) {
+    //Use the Fetch API to send a request to the server
+    fetch("/delete-exercise", {
+      method: "POST", //Specify the method as POST
+      body: JSON.stringify({ exerciseID: exerciseID }),// Convert the exercise id object to a JSON string and set it as the request body
+    })
+    .then((_res) => { //Handle the response from the server
+      window.location.href = "/coach/Exercises"; //Redirect the browser to the specified URL
+    });
+  }
+</script>
+
+{% block content %}
+<h3>Edit exercises</h3>
+  <h5>Create new exercise</h5>
+  <form method="POST">
+    <input name="newExerciseName" id="newExerciseName" class="form-control">
+    <div style="margin-top: 10px; margin-bottom: 20px">
+    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px">Add Exercise</button>
+  </div>
+  </form>
+  <h5>All exercises</h5>
+  <!--Displaying all the current exercises within the database-->
+  <ul class="list-group list-group-flush" id="exercises">
+      {% for exercise in exercises %}
+      <li class="list-group-item">
+        {{ exercise.name }}
+      <!--Button that allows the deletion of exercises-->
+      <button type="button" class="close" onClick="deleteExercise('{{ exercise.id }}')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </li>
+    {% endfor %}
+    {% endblock %}     

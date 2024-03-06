@@ -31,11 +31,11 @@ def create_app():
         if first_record == None:
             #Initializing values in my database  
             #initializing values in the exercise table
-            newExercise = Exercise(name="Bench Press") #Add bench press exercise
+            newExercise = Exercise(name="Bench press") #Add bench press exercise
             db.session.add(newExercise) #add this exercise to the database
-            newExercise = Exercise(name="Squat Pause") #Add squat pause exercise
+            newExercise = Exercise(name="Squat pause") #Add squat pause exercise
             db.session.add(newExercise) #add this exercise to the database
-            newExercise = Exercise(name="Hollow Hold") #Add hollow hold exercise
+            newExercise = Exercise(name="Hollow hold") #Add hollow hold exercise
             db.session.add(newExercise) #add this exercise to the database
             db.session.commit() #save the database
             

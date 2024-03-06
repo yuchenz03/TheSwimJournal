@@ -1,0 +1,48 @@
+{% extends "coachBase.html" %}
+{% block title %}
+The Swim Journal | Goals
+{% endblock %}
+
+{% block style%}
+<style>
+/* CSS used to display the table of swimmers */
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Goals</h1>
+{% if members|length == 0 %}
+No members to show.
+{% else %}
+<table>
+    <tr>
+      <th>Swimmer</th>
+      <th>Season Goal</th>
+      <th>{{year}}'s Goal</th>
+      <th>Long-term Goal</th>
+    </tr>
+    {% for member in members %}
+    <tr>
+        <td>{{member.forename}} {{member.surname}}</td>
+        <td>{{member.seasonGoal}}</td>
+        <td>{{member.yearlyGoal}}</td>
+        <td>{{member.longtermGoal}}</td>
+    </tr>
+    {% endfor %}
+{% endif %}
+{% endblock %}

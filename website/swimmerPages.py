@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 import sqlite3
 from random import randint
 import json
+import datetime
 
 swimmerpages = Blueprint("swimmerPages", __name__)
 
@@ -49,8 +50,11 @@ def swimmerSession():
 @login_required
 @swimmerpages.route("/Settings", methods=['GET', 'POST']) 
 def swimmerSettings():
-    squadMemberID = SquadMembers.query.filter_by(userID=current_user.id).first() #query the datbase for a user with the provided id
-    squadID = squadMemberID.squadID
+    squadMember = SquadMembers.query.filter_by(userID=current_user.id).first() #query the datbase for a user with the provided id
+    if squadMember:
+        squadID = squadMember.squadID
+    else:
+        squadID = ""
     if request.method == 'POST':
         forename = request.form['forename']
         surname = request.form['surname']
@@ -74,44 +78,34 @@ def swimmerSettings():
         current_user.surname = surname #change surname
         if len(password1) > 0: #if password is different
             current_user.password = generate_password_hash(password1, method='pbkdf2:sha256') #change password
-        if squads_id != squadID:
-            newSquadMember = SquadMembers(squadID=squads_id, userID=current_user.id)
-        db.session.add(newSquadMember)
+        if int(squads_id) != squadID: #if the squadID has changed
+            currentsquad = SquadMembers.query.get(squadMember.id)
+            db.session.delete(currentsquad)
+            newSquadMember = SquadMembers(squadID=squads_id, userID=current_user.id) #create a new squad member
+            db.session.add(newSquadMember)
 
         db.session.commit() #save database
         flash('User information updated successfully.', 'success') #flash confirmation message
         return redirect(url_for('swimmerPages.swimmerSettings'))
-    return render_template("swimmerSettings.html", user=current_user)
+    return render_template("swimmerSettings.html", user=current_user, squadID=squadID)
 
 @login_required
 @swimmerpages.route("/Goals", methods=["GET","POST"]) 
 def swimmerGoals():
-    # if request.method == 'POST': 
-    #     goal = request.form.get('goal') #Gets the goal from the HTML 
-    #     goaltype = request.form.get('goaltype')
+    today = datetime.date.today()
+    year = today.year
+    if request.method == 'POST': 
+        seasonGoal = request.form.get('seasonGoal') #Gets the goal from the HTML 
+        yearGoal = request.form.get('yearGoal') #Gets the goal from the HTML 
+        longtermGoal = request.form.get('longtermGoal') #Gets the goal from the HTML 
         
-    #     if len(goal) < 1:
-    #         flash('Goal is too short!', category='error') 
-    #     else:
-    #         new_note = Goals(data=goal, user_id=current_user.id, goaltype=goaltype)  #providing the schema for the note 
-    #         db.session.add(new_note) #adding the note to the database 
-    #         db.session.commit()
-    #         flash('Goal added!', category='success')
-    #         pass
-    return render_template("swimmerGoals.html")
-
-# # Used to delete goals
-# @swimmerpages.route('/delete-goal', methods=['POST'])
-# def delete_goal():  
-#     goal = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
-#     goalID = goal['goalID']
-#     goal = Goals.query.get(goalID)
-#     if goal:
-#         if goal.user_id == current_user.id:
-#             db.session.delete(goal)
-#             db.session.commit()
-
-#     return jsonify({})
+        current_user.seasonGoal = seasonGoal
+        current_user.yearlyGoal = yearGoal
+        current_user.longtermGoal = longtermGoal
+        db.session.commit()
+        flash('Goals updated!', category='success')
+            
+    return render_template("swimmerGoals.html", user=current_user, year=year)
 
 @login_required
 @swimmerpages.route("/Competitions", methods={'GET','POST'}) 

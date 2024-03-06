@@ -4,44 +4,32 @@ The Swim Journal | Goals
 {% endblock %}
 
 {% block content %}
-
-<!--This is used in the delete function-->
-<script type="text/javascript">
-  function deleteGoal(goalID) {
-fetch("/delete-goal", {
-method: "POST",
-body: JSON.stringify({ goalID: goalID }),
-}).then((_res) => {
-window.location.href = "/swimmerGoals";
-});
-}
-</script>
-
 <h1>Goals</h1>
-<!--Jinja that loops through each goal and allows them to be displayed in a table-->
-<ul class="list-group list-group-flush" id="goals">
-    {% for goal in user.goals %}
-    <li class="list-group-item">
-      {{goal.goaltype}}'s goal: {{ goal.data }}
-      <button type="button" class="close" onClick="deleteGoal('{{goal.id}}')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </li>
-    {% endfor %}
-  </ul>   
-  <form method="POST">
-    <!--Adding a goal-->
-    <label for="goaltype">Select Goal Type:</label>
-    <select name="goaltype" id="goaltype" class="form-control">
-      <option value="Today">Today</option>
-      <option value="Season">Season</option>
-      <option value="Year">Year</option>
-    </select>
-    <textarea name="goal" id="goal" class="form-control"></textarea>
-    <br />
-    <div>
-      <button type="submit" class="btn btn-primary">Add Goal</button>
-    </div>
-  </form>
-
-  {% endblock %}
+<form method="POST">
+  <div class="form-group">
+      <label for="seasonGoal">Season Goal</label>
+      <textarea
+      type="textarea" 
+      name="seasonGoal" 
+      id="seasonGoal" 
+      class="form-control">{{user.seasonGoal}}</textarea>
+  </div>
+  <div class="form-group">
+      <label for="yearGoal">Goals for {{year}}</label>
+      <textarea
+      type="textarea"
+      name="yearGoal"
+      id="yearGoal" 
+      class="form-control">{{user.yearlyGoal}}</textarea>
+  </div>
+  <div class="form-group">
+    <label for="longtermGoal">Goals for the future</label>
+    <textarea
+    type="textarea" 
+    name="longtermGoal" 
+    id="longtermGoal" 
+    class="form-control">{{user.longtermGoal}}</textarea>
+  </div>
+<button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+{% endblock %}

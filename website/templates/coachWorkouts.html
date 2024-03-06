@@ -3,42 +3,35 @@
 The Swim Journal | Workouts
 {% endblock %}
 
-<!--Javascript used to delete a variable-->
-<script type="text/javascript">
-  //Define the function 'deleteExercise' which takes 'exerciseID' as a parameter
-  function deleteExercise(exerciseID) {
-    //Use the Fetch API to send a request to the server
-    fetch("/delete-exercise", {
-      method: "POST", //Specify the method as POST
-      body: JSON.stringify({ exerciseID: exerciseID }),// Convert the exercise id object to a JSON string and set it as the request body
-    })
-    .then((_res) => { //Handle the response from the server
-      window.location.href = "/coach/Workouts"; //Redirect the browser to the specified URL
-    });
-  }
-</script>
-
 {% block content %}
-<h1>My Workouts</h1>
+<h1>My Workouts</h1>  
 <!--displaying the past workouts and providing a template to create new workouts-->
 <div class="container" style="display: grid; grid-template-columns: 1fr 1fr;">
 <div class="left", style="padding:10px">
-<h3>View past workouts</h3>
 <h3>Create new workout</h3>
   <form method="POST">
+    <label for="workoutType">Choose type of workout:</label>
+      <select name='workoutType' id='workoutType' class="form-control">
+        <option value="land">Land training</option>
+        <option value="pool">Pool training</option>
+      </select>
     <label for="name">Workout Name:</label>
       <input name="name" id="name" class="form-control">
-    {% for i in range(10) %}
-    <label for="ex1">Select Exercise:</label>
-      <select name='{{ "ex" + loop.index|string }}' id='{{ "ex" + loop.index|string }}' class="form-control">
-        {% for exercise in exercises %}
-        <option value="{{ exercise.name }}">{{ exercise.name }}</option>
-        {% endfor %}
-      </select>
-    <label for="repetitions">Repetitions:</label>
-    <input name='{{ "rep" + loop.index|string }}' id='{{ "rep" + loop.index|string }}' class="form-control">
-    <br />
-    {% endfor %}
+
+    <label for="name">Notes:</label>
+      <input name="workoutNotes" id="workoutNotes" class="form-control">
+
+    <label for="workoutExercises">Exercises</label>
+      For a pool session, enter the set as text.
+      For a land session, have one line for one exercise and the number of repetitions. 
+      E.g. Hollow hold, 10
+      <textarea 
+      type="textarea"
+      name=workoutExercises 
+      id='workoutExercises' 
+      class="form-control"></textarea>
+
+    <br/>
     <div>
       <button type="submit" class="btn btn-primary">Create workout</button>
     </div>
@@ -46,6 +39,7 @@ The Swim Journal | Workouts
 </div>
 <!--HTML code to edit and create new exercises-->
 <div class="right", style="padding:10px">
+  <h3>View past workouts</h3>
   <h3>Edit exercises</h3>
   <h5>Create new exercise</h5>
   To create multiple exercises simultaneously, simply follow the format below.

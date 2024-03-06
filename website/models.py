@@ -6,15 +6,23 @@ from flask_sqlalchemy import SQLAlchemy
 class SessionWorkout(db.Model):
     __tablename__ = 'sessionworkout'
     name = db.Column(db.String(200), primary_key=True) #name of the workout
+    sessionWorkoutExercises = db.relationship('SessionWorkoutExercises', backref="sessionworkout") #used for land training exercises
+    workoutDescription = db.Column(db.String(3000)) #used for pool sessions
+    session = db.relationship('Session', backref="sessionworkout") #SessionID
+    notes = db.Column(db.String(1000)) #notes on the workout
+    workoutType = db.Column(db.String(50)) #land or pool
+    
+class SessionWorkoutExercises(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
     reps = db.Column(db.String(200)) #number of repetitions of the exercise
-    exerciseID = db.Column(db.Integer, db.ForeignKey('exercise.id'), primary_key=True) #exercise ID
-    sessionID = db.Column(db.Integer, db.ForeignKey('session.id')) #SessionID
-
+    exerciseID = db.Column(db.Integer, db.ForeignKey('exercise.id')) #exercise ID
+    sessionWorkoutName = db.Column(db.Integer, db.ForeignKey('sessionworkout.name'))
+    
 class Exercise(db.Model):
     __tablename__ = 'exercise'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200)) #name of exercise
-    sessionWorkout = db.relationship('SessionWorkout') #relationship with sessionworkout table
+    sessionWorkout = db.relationship('SessionWorkoutExercises',backref="exercise", passive_deletes=True) #relationship with sessionworkout table
 
 class Squad(db.Model):
     __tablename__ = 'squad'
@@ -25,13 +33,13 @@ class Squad(db.Model):
 
 class Session(db.Model):
     __tablename__ = 'session'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column  (db.Integer, primary_key=True)
     date = db.Column(db.DateTime(timezone=True), default=func.now) #default date is current date
     time = db.Column(db.String(150)) #AM/ PM
     squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
     swimmerSession = db.relationship('SwimmerSession', backref="session", passive_deletes=True) #backref relationship with SwimmerSession
     coachSession = db.relationship('CoachSession', backref="session")
-    sessionWorkout = db.relationship('SessionWorkout', backref="sessionworkout")
+    sessionWorkoutName = db.Column(db.Integer, db.ForeignKey('sessionworkout.name'))
     
 class User(db.Model, UserMixin): #Creating the user model
     __tablename__ = 'user'

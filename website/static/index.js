@@ -5,7 +5,7 @@ function deleteExercise(exerciseID) {
         method: "POST",
         body: JSON.stringify({ exerciseID: exerciseID })
     }).then((_res) => { //after recieving a response from endpoint, refresh page
-        window.location.href = "/coach/Workouts";
+        window.location.href = "/coach/Exercises";
     });
     };
 }
