@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify #From the flask application, import Blueprint
 from . import db
-from .models import User, Session #, Event, Goals, Times
+from .models import User, Session, SquadMembers #, Event, Goals, Times
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 import sqlite3
@@ -9,11 +9,20 @@ import json
 
 swimmerpages = Blueprint("swimmerPages", __name__)
 
+#Function to check if a password is valid
+def isValid(password):
+    letter = any(c.isalpha() for c in password)
+    digit = any(c.isdigit() for c in password)
+    specialChar = any(not c.isalnum() for c in password)
+
+    return letter and digit and specialChar 
+
+
 ### Pages for the swimmers ###
 
 @login_required
 @swimmerpages.route("/TodaySession") 
-def swimmerDashboard():
+def swimmerTodaySession():
     user = User.query.filter_by(id=current_user.id).first()
     if user:
         name=current_user.forename.capitalize()
@@ -40,6 +49,8 @@ def swimmerSession():
 @login_required
 @swimmerpages.route("/Settings", methods=['GET', 'POST']) 
 def swimmerSettings():
+    squadMemberID = SquadMembers.query.filter_by(userID=current_user.id).first() #query the datbase for a user with the provided id
+    squadID = squadMemberID.squadID
     if request.method == 'POST':
         forename = request.form['forename']
         surname = request.form['surname']
@@ -47,24 +58,28 @@ def swimmerSettings():
         password1 = request.form['password1']
         password2 = request.form['password2']
         
-        if len(forename) < 2:
-            flash('First name must be greater than 1 character.', category='error')
-        elif len(surname) < 2:
-            flash('Surname must be greater than 1 character.', category='error')
-        elif password1 != password2:
-            flash('Passwords don\'t match.', category='error')
-        elif len(password1) < 8:
-            flash('Password must be at least 8 characters.', category='error')
+        if len(forename) != 0 and len(forename) < 2: #if invalid forename entered
+            flash('First name must be greater than 1 character.', category='error') #flash error message
+        elif len(surname) != 0 and len(surname) < 2: #if invalid surname entered
+            flash('Surname must be greater than 1 character.', category='error') #flash error message
+        elif len(password1) != 0 and len(password1) < 8: #if invalid password entered
+            flash('Password must be at least 8 characters.', category='error') #flash error message
+        elif password1 != password2: #if passwords don't match
+            flash('Passwords don\'t match.', category='error') #flash error message
+        elif len(password1) != 0 and not isValid(password1): #if invalid password entered
+            flash('Password must contain letters, numbers and special characters.', category='error') #flash error message
         
         # If you want to update the password, handle it securely (e.g., hashing) before saving it.
-        current_user.forename = forename
-        current_user.surname = surname
-        current_user.squadID = squads_id
-        if len(password1) > 0:
-            current_user.password = generate_password_hash(password1, method='sha256')
+        current_user.forename = forename #change forename
+        current_user.surname = surname #change surname
+        if len(password1) > 0: #if password is different
+            current_user.password = generate_password_hash(password1, method='pbkdf2:sha256') #change password
+        if squads_id != squadID:
+            newSquadMember = SquadMembers(squadID=squads_id, userID=current_user.id)
+        db.session.add(newSquadMember)
 
-        db.session.commit()
-        flash('User information updated successfully', 'success')
+        db.session.commit() #save database
+        flash('User information updated successfully.', 'success') #flash confirmation message
         return redirect(url_for('swimmerPages.swimmerSettings'))
     return render_template("swimmerSettings.html", user=current_user)
 

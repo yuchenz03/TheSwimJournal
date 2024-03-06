@@ -83,7 +83,7 @@ def resetPassword():
             elif password1 != password2: #If the new passwords don't match
                 flash('Passwords don\'t match.', category='error') #flash an error message
             else: #If all tests have been passed
-                user.password = generate_password_hash(password1, method='sha256') #Hash the new password
+                user.password = generate_password_hash(password1, method='pbkdf2:sha256') #Hash the new password
                 db.session.commit() #save the changes to the database
                 flash('Password changed successfully.', category='success') #Flash confirmation message
                 return redirect(url_for('auth.login')) #redirect the user to the login page
@@ -144,7 +144,7 @@ def coach_sign_up():
             flash('Password must contain letters, numbers and special characters.', category='error') #flash an error message
         else: #If all requirements are met
             new_user = User(email=email, forename=forename, surname=surname, password=generate_password_hash( 
-                password1, method='sha256'), role=role) #Hash the password and create a new user with this information
+                password1, method='pbkdf2:sha256'), role=role) #Hash the password and create a new user with this information
             db.session.add(new_user) #add this user to the database
             db.session.commit() #save the database
             login_user(new_user, remember=True) #login the new user
@@ -185,7 +185,7 @@ def swimmer_sign_up():
             flash('Password must contain letters, numbers and special characters.', category='error')
         else:
             new_user = User(email=email, forename=forename, surname=surname, password=generate_password_hash(
-                password1, method='sha256'), role=role)
+                password1, method='pbkdf2:sha256'), role=role)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)

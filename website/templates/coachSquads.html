@@ -46,39 +46,48 @@ tr:nth-child(even) {
 <div class="container">
 <div class="left">
 <!--Displaying the codes of each squad-->
-<h2><u>My Squad</u></h2>
-{{if squad }}
+<h2>My Squad</h2>
+{% if squads|length == 0 %}
+No squads created.
+{% else %}
 <table>
   <tr>
     <th>Squad</th>
     <th>Code</th>
   </tr>
-  <tr>
-    <td>{{squad.squadName}}</td>
-    <td>{{squad.id}}</td>
-  </tr>
+  {% for squad in squads %}
+    <tr>
+      <td>{{squad.squadName}}</td>
+      <td>{{squad.id}}</td>
+    </tr>
+  {% endfor %}
 </table>
+{% endif %}
+<p></p>
+
 <!--Displaying the members of each squad, including both swimmers and coaches-->
 <h2>My Swimmers</h2>
+{% if members|length == 0 %}
+No members to show.
+{% else %}
 <table>
   <tr>
-    <th>Members</th>
-    <th>Squad Code</th>
-    <th>Role</th>
+    <th>Member</th>
+    <th>Squad</th>
   </tr>
   {% for member in members %}
   <tr>
     <td>{{member.forename}} {{member.surname}}</td>
-    <td>{{member.squadID}}</td>
-    <td>{{member.role}}</td>
+    <td>{{memberSquads[loop.index0]}}</td>
   </tr>
   {% endfor %}
+{% endif %}
 </table>
 
 </div>
 <div class="right">
 <!--Creating a new squad-->
-    <h3><u>Create a Squad</u></h3>
+    <h3>Create a Squad</h3>
     <form method="POST">
         <label for="squadName">Squad Name:</label>
         <input type="text" id="squadName" name="squadName" required><br><br>

@@ -1,1 +1,3 @@
-print(round(3.5))
+list1 = []
+list1.extend([10]*4)
+print(list1)

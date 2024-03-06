@@ -1,7 +1,7 @@
 #importing all the dependencies
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify #From the flask application, import Blueprint
 from . import db
-from .models import User, Exercise, Squad, SessionWorkout #import the user, exercise and squad tables from the models page
+from .models import User, Exercise, Squad, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 from random import randint
@@ -134,22 +134,22 @@ def delete_exercise():
 @coachpages.route("/Squads", methods = {'GET', 'POST'}) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachSquads():
-    
-    if current_user.squadID: #If the current user is part of a squad
-        squadid = current_user.squadID 
-        squad = Squad.query.get(squadid)
-        members = User.query.filter_by(squadID=squadid).all()
-        if squad is None:
-            # Handle the case where the squad does not exist
-            squad=[]
-        if members is None:
-            # Handle the case where there are no members
-            members=[]
-        
-    else:
-        squad="" #else, to prevent an error, set the squad to empty string
-        members=[] #set the members to empty list
-        squadCode=0 #set squadcode to 0
+    squadMemberIDs = SquadMembers.query.filter_by(userID=current_user.id).all() #query the datbase for a user with the provided id
+    if squadMemberIDs: #If the current user is part of a squad
+        allMembers = []
+        squads = []
+        memberSquads = []
+        for squadMemberID in squadMemberIDs:
+            squad = Squad.query.filter_by(id=squadMemberID.squadID).first()
+            squads.append(squad)
+            members = SquadMembers.query.filter_by(squadID=squadMemberID.squadID).all()
+            for member in members:
+                allMembers.append(User.query.filter_by(id=member.userID).first())
+            memberSquads.extend([squad.squadName]*len(members))
+    else: #if there are no squads that the user is part of
+        squads=[]
+        members=[]
+        memberSquads=[]
         
     if request.method == 'POST': #if there are inputs
         squadName = request.form.get('squadName') #retrieve the squadName from the page
@@ -160,19 +160,17 @@ def coachSquads():
         elif len(squadName) < 2: #if the squadname is less than 2
             flash("Squad name too short.", category="error") #flash an error message
         else: 
-            flash("Squad successfully created") #flash confirmation message
+            flash("Squad successfully created! Please refresh to update table.") #flash confirmation message
             squadCode = randint(1000,9999) #generate a random 4 digit squadCode
             new_squad = Squad(id=squadCode, squadName=squadName) #create a new squad
             db.session.add(new_squad) #add to database
             db.session.commit() #save the database
-    
-            squad_id = squadCode
-            current_user.squadID = squad_id #make the current_user's squad this squad
-            db.session.commit()
-        
-            squad = Squad.query.get(squad_id)
 
-    return render_template("coachSquads.html", user=current_user, squad=squad, members=members)
+            #Add the current user into the squad
+            userSquad = SquadMembers(squadID=squadCode, userID=current_user.id)
+            db.session.add(userSquad)
+            db.session.commit()
+    return render_template("coachSquads.html", user=current_user, squads=squads, members=allMembers, memberSquads=memberSquads)
 
 
 @coachpages.route("/Settings", methods=['GET', 'POST']) 
@@ -189,7 +187,7 @@ def coachSettings():
         elif len(surname) != 0 and len(surname) < 2: #if invalid surname entered
             flash('Surname must be greater than 1 character.', category='error') #flash error message
         elif len(password1) != 0 and len(password1) < 8: #if invalid password entered
-            flash('Password must be at least 8 characters.', category='error') #flash error message
+            flash('Password must be at least 8 char   acters.', category='error') #flash error message
         elif password1 != password2: #if passwords don't match
             flash('Passwords don\'t match.', category='error') #flash error message
         elif len(password1) != 0 and not isValid(password1): #if invalid password entered
@@ -201,7 +199,7 @@ def coachSettings():
         if len(surname) > 0: #if surname is different
             current_user.surname = surname #change surname
         if len(password1) > 0: #if password is different
-            current_user.password = generate_password_hash(password1, method='sha256') #change password
+            current_user.password = generate_password_hash(password1, method='pbkdf2:sha256') #change password
 
         db.session.commit() #save database
         flash('User information updated successfully.', 'success') #flash confirmation message

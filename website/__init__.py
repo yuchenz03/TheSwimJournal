@@ -65,7 +65,7 @@ def create_app():
                         events.append(Event(gender=gender, stroke=stroke, poolDistance="SCM", #add an event for SCM
                                             distance=str(distance)+"m", numOfSplits=numOfSplits, baseTime=None))
                         events.append(Event(gender=gender, stroke=stroke, poolDistance="LCM", #add an event for LCM
-                                            distance=str(distance)+"m", baseTime=None))
+                                            distance=str(distance)+"m", numOfSplits=numOfSplits, baseTime=None))
                 if stroke == "Free": #After free events have been appended
                     meterdistances = meterdistances[:4] #remove last four distances from list
             
