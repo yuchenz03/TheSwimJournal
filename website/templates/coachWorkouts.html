@@ -22,9 +22,9 @@ The Swim Journal | Workouts
       <input name="workoutNotes" id="workoutNotes" class="form-control">
 
     <label for="workoutExercises">Exercises</label>
-      For a pool session, enter the set as text.
-      For a land session, have one line for one exercise and the number of repetitions. 
-      E.g. Hollow hold, 10
+      <p>For a pool session, enter the set as text.
+      For a land session, have one line for one exercise and the number of repetitions.</p>
+      <p>E.g. Hollow hold, 10</p>
       <textarea 
       type="textarea"
       name=workoutExercises 
@@ -40,27 +40,19 @@ The Swim Journal | Workouts
 <!--HTML code to edit and create new exercises-->
 <div class="right", style="padding:10px">
   <h3>View past workouts</h3>
-  <h3>Edit exercises</h3>
-  <h5>Create new exercise</h5>
-  To create multiple exercises simultaneously, simply follow the format below.
   <form method="POST">
-    <input name="newExerciseName" id="newExerciseName" class="form-control" placeholder="exercise1, exercise2, exercise3">
-    <div style="margin-top: 10px; margin-bottom: 20px">
-    <button type="submit" class="btn btn-primary" style="margin-bottom: 10px">Add Exercise</button>
-  </div>
+    <label for="workoutType">Choose workout to view: </label>
+      <select name='viewWorkoutID' id='viewWorkoutID' class="form-control">
+        {% for workout in existingWorkouts%}
+        <option value="{{workout.id}}">{{workout.name}}</option>
+        {% endfor %}
+      </select>
+      <br/>
+      <button type="submit" class="btn btn-primary">Confirm</button>
   </form>
-  <h5>All exercises</h5>
-  <!--Displaying all the current exercises within the database-->
-  <ul class="list-group list-group-flush" id="exercises">
-      {% for exercise in exercises %}
-      <li class="list-group-item">
-        {{ exercise.name }}
-      <!--Button that allows the deletion of exercises-->
-      <button type="button" class="close" onClick="deleteExercise('{{ exercise.id }}')">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </li>
-    {% endfor %}
+  
+  
+  <h3>Edit exercises</h3>
 </div>
 </div>
 {% endblock %} 
