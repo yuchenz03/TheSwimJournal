@@ -5,7 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 class SessionWorkout(db.Model):
     __tablename__ = 'sessionworkout'
-    name = db.Column(db.String(200), primary_key=True) #name of the workout
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200)) #name of the workout
     sessionWorkoutExercises = db.relationship('SessionWorkoutExercises', backref="sessionworkout") #used for land training exercises
     workoutDescription = db.Column(db.String(3000)) #used for pool sessions
     session = db.relationship('Session', backref="sessionworkout") #SessionID
@@ -16,7 +17,7 @@ class SessionWorkoutExercises(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reps = db.Column(db.String(200)) #number of repetitions of the exercise
     exerciseID = db.Column(db.Integer, db.ForeignKey('exercise.id')) #exercise ID
-    sessionWorkoutName = db.Column(db.Integer, db.ForeignKey('sessionworkout.name'))
+    sessionWorkoutID = db.Column(db.Integer, db.ForeignKey('sessionworkout.name'))
     
 class Exercise(db.Model):
     __tablename__ = 'exercise'
@@ -39,7 +40,7 @@ class Session(db.Model):
     squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
     swimmerSession = db.relationship('SwimmerSession', backref="session", passive_deletes=True) #backref relationship with SwimmerSession
     coachSession = db.relationship('CoachSession', backref="session")
-    sessionWorkoutName = db.Column(db.Integer, db.ForeignKey('sessionworkout.name'))
+    sessionWorkoutID = db.Column(db.Integer, db.ForeignKey('sessionworkout.id'))
     
 class User(db.Model, UserMixin): #Creating the user model
     __tablename__ = 'user'

@@ -75,11 +75,14 @@ def delete_exercise():
 @coachpages.route("/Workouts", methods=['POST','GET']) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachWorkouts():
+    existingWorkouts = SessionWorkout.query.all()
+    viewWorkoutID = None
     if request.method == 'POST': 
         workoutName = request.form.get('name') #workout name retrieved from form
         workoutExercises = request.form.get('workoutExercises') #exercises in the workout retrieved from form
         workoutNotes = request.form.get('workoutNotes')
         workoutType = request.form.get('workoutType')
+        viewWorkoutID = request.form.get('viewWorkoutID')
         
         if workoutName:
             workoutExists = SessionWorkout.query.filter_by(name=workoutName).first()
@@ -95,28 +98,35 @@ def coachWorkouts():
                             workoutExercise = workoutExercise.split(",")
                             exercise = workoutExercise[0].strip()
                             exercise = exercise.capitalize()
-                            exercise = Exercise.query.filter_by(name=exercise)
-                            if exercise:
+                            exerciseObject = Exercise.query.filter_by(name=exercise).first()
+                            if exerciseObject:
                                 try:
                                     repetitions = int(workoutExercise[1].strip())
                                 except ValueError:
                                     flash('Please enter repetitions as an integer.', category='error')
                                     return redirect(url_for('coachPages.coachWorkouts'))
-                                db.session.add(SessionWorkoutExercises(reps=repetitions,exerciseID=exercise.id,sessionWorkoutID=currentworkout.id))
+                                db.session.add(SessionWorkoutExercises(reps=repetitions,exerciseID=exerciseObject.id,sessionWorkoutID=currentworkout.id))
                                 db.session.commit() #saving the database
+                                flash('Workout Created!', category='success')
+                                return redirect(url_for('coachPages.coachWorkouts')) #refresh page
                             else:
                                 flash('Exercise does not exist in database.', category='error')
+                    else:
+                        flash('Please enter at least one exercise.', category='error')
                 else:
                     db.session.add(SessionWorkout(name=workoutName, notes=workoutNotes, workoutType=workoutType, workoutDescription=workoutExercises))
                     db.session.commit() #saving the database
+                    flash('Workout Created!', category='success')
+                    return redirect(url_for('coachPages.coachWorkouts')) #refresh page
             else:
                 flash('Workout name already in use.', category='error')
-        if (len(workoutExercises)!=0 or len(workoutNotes)!=0 or len(workoutType)!=0)and len(workoutName)==0:
+        if (workoutExercises!=None or workoutNotes!=None) and len(workoutName)==0:
             flash('Cannot create workout without name.', category='error')
-        return redirect(url_for('coachPages.coachWorkouts')) #refresh page
     
+        if viewWorkoutID == None:
+            viewWorkoutID = ""
     #rendering the coach session page
-    return render_template("coachWorkouts.html", user = current_user)
+    return render_template("coachWorkouts.html", user=current_user, existingWorkouts=existingWorkouts, viewWorkoutID=viewWorkoutID)
 
 #route for the coach's my swimmers page, supporting get and post methods
 @coachpages.route("/Squads", methods = {'GET', 'POST'}) 
