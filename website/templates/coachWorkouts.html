@@ -3,56 +3,86 @@
 The Swim Journal | Workouts
 {% endblock %}
 
+<script type=""text/javascript">
+//Function used to delete workout exercises from the coach workouts page
+function deleteWorkoutExercise(workoutExerciseID) {
+  if(confirm("Are you sure you want to delete this exercise?")) {
+  fetch("/coach/delete-workout-exercise", { //Sends a post request to delete-exercise endpoint
+      method: "POST",
+      body: JSON.stringify({ workoutExerciseID: workoutExerciseID })
+  }).then((_res) => { //after recieving a response from endpoint, refresh page
+      window.location.href = "/coach/Workouts";
+  });
+  };
+}
+</script>
+
 {% block content %}
-<h1>My Workouts</h1>  
+<h1>My Workouts</h1>
 <!--displaying the past workouts and providing a template to create new workouts-->
 <div class="container" style="display: grid; grid-template-columns: 1fr 1fr;">
-<div class="left", style="padding:10px">
-<h3>Create new workout</h3>
-  <form method="POST">
-    <label for="workoutType">Choose type of workout:</label>
+  <div class="left" , style="padding:10px">
+    <h3>Create new workout</h3>
+    <form method="POST">
+      <label for="workoutType">Choose type of workout:</label>
       <select name='workoutType' id='workoutType' class="form-control">
         <option value="land">Land training</option>
         <option value="pool">Pool training</option>
       </select>
-    <label for="name">Workout Name:</label>
+      <label for="name">Workout Name:</label>
       <input name="name" id="name" class="form-control">
 
-    <label for="name">Notes:</label>
+      <label for="name">Notes:</label>
       <input name="workoutNotes" id="workoutNotes" class="form-control">
 
-    <label for="workoutExercises">Exercises</label>
+      <label for="workoutExercises">Exercises</label>
       <p>For a pool session, enter the set as text.
-      For a land session, have one line for one exercise and the number of repetitions.</p>
+        For a land session, have one line for one exercise and the number of repetitions.</p>
       <p>E.g. Hollow hold, 10</p>
-      <textarea 
-      type="textarea"
-      name=workoutExercises 
-      id='workoutExercises' 
-      class="form-control"></textarea>
-
-    <br/>
-    <div>
-      <button type="submit" class="btn btn-primary">Create workout</button>
-    </div>
-  </form>
-</div>
-<!--HTML code to edit and create new exercises-->
-<div class="right", style="padding:10px">
-  <h3>View past workouts</h3>
-  <form method="POST">
-    <label for="workoutType">Choose workout to view: </label>
+      <textarea type="textarea" name=workoutExercises id='workoutExercises' class="form-control"></textarea>
+      <br />
+      <div>
+        <button type="submit" class="btn btn-primary">Create workout</button>
+      </div>
+    </form>
+  </div>
+  <!--HTML code to edit and create new exercises-->
+  <div class="right" , style="padding:10px">
+    <h3>Edit past workouts</h3>
+    <form method="POST">
+      <label for="workoutType">Choose workout to edit: </label>
       <select name='viewWorkoutID' id='viewWorkoutID' class="form-control">
         {% for workout in existingWorkouts%}
-        <option value="{{workout.id}}">{{workout.name}}</option>
+        <option value="{{ workout.id }}">{{ workout.name }}</option>
         {% endfor %}
       </select>
       <br/>
       <button type="submit" class="btn btn-primary">Confirm</button>
-  </form>
-  
-  
-  <h3>Edit exercises</h3>
+    </form>
+    {% if workout != None %}
+
+    <h3>Workout name: {{workout.name}} </h3>
+    {% if workout.workoutType == "land"%}
+    <h3>Existing exercises</h3>
+    {% if exerciseNames != None%}
+    {{ exerciseNames }}
+    {{ exerciseReps }}
+    <ul class="list-group list-group-flush">
+      {% for exercise in exerciseNames %}
+      <li class="list-group-item">
+        Hello
+        {{ exercise }} {{ exerciseReps[loop.index0] }}
+        <!--Button that allows the deletion of exercises-->
+        <button type="button" class="close" onClick="deleteExercise('{{ exercise.id }}')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </li>
+      {% endfor %}
+    {% else %}
+    {% endif %}
+    {% endif %}
+    {% endif %}
+
+  </div>
 </div>
-</div>
-{% endblock %} 
+{% endblock %}

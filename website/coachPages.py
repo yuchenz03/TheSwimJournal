@@ -70,41 +70,44 @@ def delete_exercise():
         db.session.commit() #save the database
     return jsonify({}) #return empty input to index file
 
-
 #Route for the coach workouts page, supporting the post and get methods
 @coachpages.route("/Workouts", methods=['POST','GET']) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachWorkouts():
-    existingWorkouts = SessionWorkout.query.all()
-    viewWorkoutID = None
+    existingWorkouts = SessionWorkout.query.all() #Retrieving all existingWorkouts
+    viewWorkout = None #Initializing viewWorkout, workoutExercises, exerciseNames and exerciseReps
+    workoutExercises = None
+    exerciseNames = None
+    exerciseReps = None
     if request.method == 'POST': 
-        workoutName = request.form.get('name') #workout name retrieved from form
-        workoutExercises = request.form.get('workoutExercises') #exercises in the workout retrieved from form
+        workoutName = request.form.get('name') #Information retrieved from form
+        workoutExercises = request.form.get('workoutExercises') 
         workoutNotes = request.form.get('workoutNotes')
         workoutType = request.form.get('workoutType')
         viewWorkoutID = request.form.get('viewWorkoutID')
         
-        if workoutName:
-            workoutExists = SessionWorkout.query.filter_by(name=workoutName).first()
-            if not workoutExists:
-                if workoutType == 'land':
+        if workoutName: #If a workout is to be created
+            workoutExists = SessionWorkout.query.filter_by(name=workoutName).first() 
+            if not workoutExists: #If the workout name is not already in use:
+                if workoutType == 'land': #For land workouts, create a workout first
                     db.session.add(SessionWorkout(name=workoutName, notes=workoutNotes, workoutType=workoutType))
                     db.session.commit() #saving the database
-                        #Adding a new exercise
-                    if workoutExercises:
+                    #Saving the workout exercises entered by the user
+                    if workoutExercises: #If there are workout exercises:
                         currentworkout = SessionWorkout.query.filter_by(name=workoutName).first()
                         workoutExercises = workoutExercises.split('\n') #extract the individual exercise names and reps and store in a list
                         for workoutExercise in workoutExercises: #looping through exercises
-                            workoutExercise = workoutExercise.split(",")
-                            exercise = workoutExercise[0].strip()
-                            exercise = exercise.capitalize()
-                            exerciseObject = Exercise.query.filter_by(name=exercise).first()
-                            if exerciseObject:
-                                try:
-                                    repetitions = int(workoutExercise[1].strip())
-                                except ValueError:
+                            workoutExercise = workoutExercise.split(",") #Split into exercise and reps
+                            exercise = workoutExercise[0].strip() #extract exercise
+                            exercise = exercise.capitalize() #capitalize the exercise to fit format in database
+                            exerciseObject = Exercise.query.filter_by(name=exercise).first() #find the exercise in database
+                            if exerciseObject: #if the exercise exists in database
+                                try: 
+                                    repetitions = int(workoutExercise[1].strip()) 
+                                except ValueError: #Ensuring the number of repetitions is an integer
+                                    
                                     flash('Please enter repetitions as an integer.', category='error')
-                                    return redirect(url_for('coachPages.coachWorkouts'))
+                                #If all conditions are met, create the exercises
                                 db.session.add(SessionWorkoutExercises(reps=repetitions,exerciseID=exerciseObject.id,sessionWorkoutID=currentworkout.id))
                                 db.session.commit() #saving the database
                                 flash('Workout Created!', category='success')
@@ -122,13 +125,38 @@ def coachWorkouts():
                 flash('Workout name already in use.', category='error')
         if (workoutExercises!=None or workoutNotes!=None) and len(workoutName)==0:
             flash('Cannot create workout without name.', category='error')
-    
-        if viewWorkoutID == None:
-            viewWorkoutID = ""
-    #rendering the coach session page
-    return render_template("coachWorkouts.html", user=current_user, existingWorkouts=existingWorkouts, viewWorkoutID=viewWorkoutID)
 
-#route for the coach's my swimmers page, supporting get and post methods
+        if viewWorkoutID == None:
+            viewWorkout = None
+        else:
+            exercises = []
+            exerciseNames = []
+            exerciseReps = []
+            viewWorkout = SessionWorkout.query.filter_by(id=viewWorkoutID).first()
+            if viewWorkout.workoutType == "land":
+                workoutExercises = SessionWorkoutExercises.query.filter_by(exerciseID=viewWorkoutID).all()
+                for workoutExercise in workoutExercises:
+                    exercises.append(Exercise.query.filter_by(id=workoutExercise.id).first())
+                    exerciseReps.append(workoutExercise.reps)
+                for exercise in exercises:
+                    exerciseNames.append(exercise.name)
+                
+            
+    #rendering the coach session page
+    return render_template("coachWorkouts.html", user=current_user, existingWorkouts=existingWorkouts, workout=viewWorkout, exerciseNames=exerciseNames, exerciseReps=exerciseReps)
+
+#Used to delete workout exercises
+@coachpages.route('/delete-workout-exercise', methods = ['POST'])
+def delete_workout_exercise():
+    workoutExercise = json.loads(request.data) #this function recieves a JSON from the index.js file
+    workoutExerciseID = workoutExercise['workoutExerciseID'] #retrieves the exerciseID to delete 
+    workoutExercise = SessionWorkoutExercises.query.get(workoutExerciseID) #queries the exercise
+    if workoutExercise: #if this exercise is found
+        db.session.delete(workoutExercise) #delete this exercise
+        db.session.commit() #save the database
+    return jsonify({}) #return empty input to index file
+
+#route for the coach's quads page, supporting get and post methods
 @coachpages.route("/Squads", methods = {'GET', 'POST'}) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachSquads():
