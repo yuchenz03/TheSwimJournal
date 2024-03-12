@@ -61,6 +61,7 @@ class User(db.Model, UserMixin): #Creating the user model
     role = db.Column(db.String(150)) #swimmer or coach
     SQquestion = db.Column(db.Integer) #security question 
     SQans = db.Column(db.String(150)) #security question answer
+    gender = db.Column(db.String(150)) #M or F
     squadMembers = db.relationship('SquadMembers', backref="user")
     competitionTimes = db.relationship('CompetitionTimes', backref="user")
     coachSession = db.relationship('CoachSession', backref="user")

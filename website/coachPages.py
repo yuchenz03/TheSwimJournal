@@ -1,7 +1,7 @@
 #importing all the dependencies
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, session #From the flask application, import Blueprint
 from . import db
-from .models import User, Exercise, Squad, Session, SessionWorkoutExercises, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
+from .models import User, Event, Exercise, Squad, Session, SessionWorkoutExercises, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 from random import randint
@@ -425,7 +425,8 @@ def coachGoals():
 @coachpages.route("/BaseTimes", methods=['GET', 'POST']) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachBaseTimes(): 
-    return render_template("coachBaseTimes.html") #render coach base times template
+    events = Event.query.all()
+    return render_template("coachBaseTimes.html", events=events) #render coach base times template
 
 @coachpages.route("/BestTimes", methods=['GET', 'POST']) 
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page

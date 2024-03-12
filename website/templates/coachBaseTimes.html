@@ -1,0 +1,49 @@
+{% extends "coachBase.html" %}
+{% block title %}
+The Swim Journal | Base Times
+{% endblock %}
+
+{% block content %}
+<h1>Enter World Aquatic Base Times</h1>
+<div>You can find the base times at this link: 
+    <a href="https://www.worldaquatics.com/swimming/points">World Aquatics Page</a>
+</div>
+<form>
+    <label for="eventID"></label>
+    <select name='eventID' id='eventID' class="form-control">
+        <option value="">Choose event: </option>
+        {% for exercise in allExercises%}
+        <option value="{{ event.id }}">{{ exercise.name }}</option>
+        {% endfor %}
+      </select>
+</form>
+
+<label for="newExercise">
+    <h5>Add new exercise</h5>
+  </label>
+
+  <select name='newExerciseID' id='newExerciseID' class="form-control">
+    <option value="">Choose event gender: </option>
+    <option value="M">Male</option>
+    <option value="F">Female</option>
+  </select>
+  <select name='newExerciseID' id='newExerciseID' class="form-control">
+    <option value="">Choose distance: </option>
+    {% for event in events%}
+    <option value="{{ event.id }}">{{event.gender}} {{event.poolDistance}} {{event.stroke}} {{event.distance}}</option>
+    {% endfor %}
+  </select>
+  <select name='newExerciseID' id='newExerciseID' class="form-control">
+    <option value="">Choose event gender: </option>
+    {% for event in events%}
+    <option value="{{ event.id }}">{{event.gender}} {{event.poolDistance}} {{event.stroke}} {{event.distance}}</option>
+    {% endfor %}
+  </select>
+  <select name='newExerciseID' id='newExerciseID' class="form-control">
+    <option value="">Choose event gender: </option>
+    {% for event in events%}
+    <option value="{{ event.id }}">{{event.gender}} {{event.poolDistance}} {{event.stroke}} {{event.distance}}</option>
+    {% endfor %}
+  </select>
+  
+  {% endblock %}
