@@ -18,7 +18,7 @@ The Swim Journal | Dashboard
       flex: 60%; 
       padding: 8px;
       margin-right: 8px;
-      text-align: right 
+      text-align: left 
     }
     
     /*Styling for the right container*/
@@ -34,13 +34,27 @@ The Swim Journal | Dashboard
 <div class="left">
     <h1 style="text-align:left">Welcome, {{name}}!</h1>
     <h2>Pre-session Questionnaire</h2>
-    <label for="sleep">Hours of sleep: <span id="sleepvalue"></span> </label>
-    <div>If you slept more than 9 hours of sleep, choose 9 hours</div>
-
-
+    <label for="sleep">Hours of sleep: <span id="sleepvalue"></span></label>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="range" id="sleep" name="sleep" min="0" max="9" step="1" value="8">
+    <span id="sleepvalue"></span>
+    <div>If you slept more than 9 hours of sleep, choose 9 hours.</div>
+    <script>
+        // JavaScript to update the selected value when the slider changes
+        var slider1 = document.getElementById("sleep");
+        var output1 = document.getElementById("sleepvalue");
+        output1.innerHTML = slider1.value;
+        slider1.oninput = function() {
+            output1.innerHTML = this.value;
+        };
+    </script>
     <label for="stress">Stress: <span id="stressvalue"></span> </label>
-    <input type="range" id="stress" name="stress" min="0" max="10" step="1" value="5">
-    <div>0 being least stressed, 10 being most stressed</div>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input style="text-align:right" type="range" id="stress" name="stress" min="0" max="10" step="1" value="5">
+    <div>0 being least stressed, 10 being most stressed.</div>
     <script>
         var slider2 = document.getElementById("stress");
         var output2 = document.getElementById("stressvalue");
@@ -50,8 +64,11 @@ The Swim Journal | Dashboard
         };
     </script>
     <label for="fatigue">Fatigue: <span id="fatiguevalue"></span></label>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <input type="range" id="fatigue" name="fatigue" min="0" max="10" step="1" value="5">
-    <div>0 being most fatigued, 10 being least fatigued</div>
+    <div>0 being most fatigued, 10 being least fatigued.</div>
     <script>
         var slider3 = document.getElementById("fatigue");
         var output3 = document.getElementById("fatiguevalue");
@@ -62,8 +79,11 @@ The Swim Journal | Dashboard
     </script>
 
     <label for="hydration">Hydration: <span id="hydrationvalue"></span></p></label>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;&nbsp;
     <input type="range" id="hydration" name="hydration" min="0" max="5" step="1" value="3">
-    <div>0 being feeling extremely thirsty, 5 being well-hydrated,</div>
+    <div>0 being feeling extremely thirsty, 5 being well-hydrated.</div>
     <script>
         var slider4 = document.getElementById("hydration");
         var output4 = document.getElementById("hydrationvalue");
@@ -101,18 +121,7 @@ The Swim Journal | Dashboard
 </div>
 
 <div class="right">
-    <br>
-    <input type="range" id="sleep" name="sleep" min="0" max="9" step="1" value="8" class="form-control">
-    <span id="sleepvalue"></span>
-    <script>
-        // JavaScript to update the selected value when the slider changes
-        var slider1 = document.getElementById("sleep");
-        var output1 = document.getElementById("sleepvalue");
-        output1.innerHTML = slider1.value;
-        slider1.oninput = function() {
-            output1.innerHTML = this.value;
-        };
-    </script>
+    <br
 </div>
 </div>
 {% endblock %}
