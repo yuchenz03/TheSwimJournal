@@ -8,42 +8,44 @@ The Swim Journal | Base Times
 <div>You can find the base times at this link: 
     <a href="https://www.worldaquatics.com/swimming/points">World Aquatics Page</a>
 </div>
-<form>
-    <label for="eventID"></label>
-    <select name='eventID' id='eventID' class="form-control">
-        <option value="">Choose event: </option>
-        {% for exercise in allExercises%}
-        <option value="{{ event.id }}">{{ exercise.name }}</option>
-        {% endfor %}
-      </select>
-</form>
 
-<label for="newExercise">
-    <h5>Add new exercise</h5>
-  </label>
-
-  <select name='newExerciseID' id='newExerciseID' class="form-control">
+  <label for="gender"></label>
+  <select name='gender' id='gender' class="form-control">
     <option value="">Choose event gender: </option>
     <option value="M">Male</option>
     <option value="F">Female</option>
-  </select>
-  <select name='newExerciseID' id='newExerciseID' class="form-control">
-    <option value="">Choose distance: </option>
-    {% for event in events%}
-    <option value="{{ event.id }}">{{event.gender}} {{event.poolDistance}} {{event.stroke}} {{event.distance}}</option>
-    {% endfor %}
-  </select>
-  <select name='newExerciseID' id='newExerciseID' class="form-control">
-    <option value="">Choose event gender: </option>
-    {% for event in events%}
-    <option value="{{ event.id }}">{{event.gender}} {{event.poolDistance}} {{event.stroke}} {{event.distance}}</option>
-    {% endfor %}
-  </select>
-  <select name='newExerciseID' id='newExerciseID' class="form-control">
-    <option value="">Choose event gender: </option>
-    {% for event in events%}
-    <option value="{{ event.id }}">{{event.gender}} {{event.poolDistance}} {{event.stroke}} {{event.distance}}</option>
-    {% endfor %}
-  </select>
+  </select><br>
+
+  <label for="poolDistance"></label>
+  <select name='poolDistance' id='poolDistance' class="form-control">
+    <option value="">Choose pool size: </option>
+    <option value="SCM">Short Course Meters</option>
+    <option value="LCM">Long Course Meters</option>
+  </select><br>
+
+  <label for="stroke"></label>
+  <select name='stroke' id='stroke' class="form-control">
+    <option value="">Choose event stroke: </option>
+    <option value="Free">Freestyle</option>
+    <option value="Back">Backstroke</option>
+    <option value="Breast">Breastroke</option>
+    <option value="Fly">Butterfly</option>
+    <option value="IM">Individual Medley</option>
+  </select><br>
+
+  <label for="distance"></label>
+  <select name='distance' id='distance' class="form-control">
+    <option value="">Choose event distance: </option>
+    <option value="50m">50m</option>
+    <option value="100m">100m</option>
+    <option value="200m">200m</option>
+    <option value="400m">400m</option>
+    <option value="800m">800m</option>
+    <option value="1500m">1500m</option>
+  </select><br>
   
+  <label for="time">Input base time:</label>
+  <input name="timeM" id="timeM">:
+  <input name="timeS" id="timeS">.
+  <input name="timeMS" id="timeMS">
   {% endblock %}
