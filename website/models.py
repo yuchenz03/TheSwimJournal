@@ -9,10 +9,10 @@ class SessionWorkout(db.Model):
     name = db.Column(db.String(200)) #name of the workout
     sessionWorkoutExercises = db.relationship('SessionWorkoutExercises', backref="sessionworkout") #used for land training exercises
     workoutDescription = db.Column(db.String(3000)) #used for pool sessions
-    session = db.relationship('Session', backref="sessionworkout") #SessionID
+    session = db.relationship('SessionWorkoutsLink', backref="sessionworkout") #SessionID
     notes = db.Column(db.String(1000)) #notes on the workout
     workoutType = db.Column(db.String(50)) #land or pool
-    
+
 class SessionWorkoutExercises(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     reps = db.Column(db.String(200)) #number of repetitions of the exercise
@@ -40,6 +40,12 @@ class Session(db.Model):
     squadID = db.Column(db.Integer, db.ForeignKey('squad.id')) #foreign key for squad
     swimmerSession = db.relationship('SwimmerSession', backref="session", passive_deletes=True) #backref relationship with SwimmerSession
     coachSession = db.relationship('CoachSession', backref="session")
+    sessionWorkoutsLink = db.relationship('SessionWorkoutsLink', backref="session")
+    
+class SessionWorkoutsLink(db.Model):
+    __tablename__ = 'sessionworkoutslink'
+    id = db.Column(db.Integer, primary_key=True)
+    sessionID = db.Column(db.Integer, db.ForeignKey('session.id'))
     sessionWorkoutID = db.Column(db.Integer, db.ForeignKey('sessionworkout.id'))
     
 class User(db.Model, UserMixin): #Creating the user model

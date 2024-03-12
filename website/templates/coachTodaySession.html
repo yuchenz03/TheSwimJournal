@@ -3,6 +3,63 @@
 The Swim Journal | Dashboard
 {% endblock %}
 
+{% block style%}
+<style>
+    /* CSS used to display the table of attendance */
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <h1>Welcome, {{name}}!</h1>
-{% endblock %} 
+{% if todaySessions|length == 0 %}
+No sessions today.
+{% else %}
+<form method="POST">
+    <label for="selectedSessionID"></label>
+    <select name="selectedSessionID" id="selectedSessionID" class="form-control">
+        <option value="">Choose a session to view: </option>
+        {% for session in todaySessions %}
+        <option value="{{session.id}}">{{ sessionSquad[loop.index0] }} {{ session.time }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <button type="submit" class="btn btn-primary">Choose Session</button>
+</form>
+{% if selectedSession != None %}
+<h2>Attendance</h2>
+<table>
+    <tr>
+        <th>Swimmer</th>
+        <th>Ability to swim</th>
+        <th>Attended</th>
+    </tr>
+    {% for swimmer in swimmers %}
+    <tr>
+        <td>{{swimmer.forename}} {{swimmer.surname}}</td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+    <h2>Create Session</h2>
+
+    <h2>Journal</h2>
+    {% endif %}
+    {% endif %}
+
+    {% endblock %}

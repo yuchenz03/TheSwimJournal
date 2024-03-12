@@ -78,9 +78,12 @@ def swimmerSettings():
         current_user.surname = surname #change surname
         if len(password1) > 0: #if password is different
             current_user.password = generate_password_hash(password1, method='pbkdf2:sha256') #change password
-        if int(squads_id) != squadID: #if the squadID has changed
+        if squadID != "" and int(squads_id) != squadID: #if the squadID has changed
             currentsquad = SquadMembers.query.get(squadMember.id)
             db.session.delete(currentsquad)
+            newSquadMember = SquadMembers(squadID=squads_id, userID=current_user.id) #create a new squad member
+            db.session.add(newSquadMember)
+        elif squadID == "" and int(squads_id) != squadID:
             newSquadMember = SquadMembers(squadID=squads_id, userID=current_user.id) #create a new squad member
             db.session.add(newSquadMember)
 

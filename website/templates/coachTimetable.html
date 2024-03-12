@@ -1,0 +1,64 @@
+{% extends "coachBase.html" %}
+{% block title %}
+The Swim Journal | Timetable
+{% endblock %}
+
+{% block content %}
+<h1>Create timetable</h1>
+{% if squads|length == 0 %}
+No squads to create timetables for.
+{% else %}
+<form method="POST">
+    <label for="chosenSquad"><h3>Choose a squad: </h3></label>
+        <select name="chosenSquad" id="chosenSquad" class="form-control">
+            <option value="">Choose a squad:</option>
+            {% for squad in squads %}
+            <option value="{{squad.id}}">{{ squad.squadName}} </option>
+            {% endfor %}
+        </select>
+    <!--Inputting the starting times for each session-->
+    Check the sessions that you would like to have.
+    <!--Having a separate input value for each day of the week-->
+    <h3>Monday</h3>
+    <label for="mondayAM">Morning Session</label>
+    <input type="checkbox" name="mondayAM" id="mondayAM" ><br>
+    <label for="mondayPM">Afternoon Session</label>
+    <input type="checkbox" name="mondayPM" id="mondayPM">
+    <h3>Tuesday</h3>
+    <label for="tuesdayAM">Morning Session</label>
+    <input type="checkbox" name="tuesdayAM" id="tuesdayAM"><br>
+    <label for="tuesdayPM">Afternoon Session</label>
+    <input type="checkbox" name="tuesdayPM" id="tuesdayPM">
+    <h3>Wednesday</h3>
+    <label for="wednesdayAM">Morning Session</label>
+    <input type="checkbox" name="wednesdayAM" id="wednesdayAM" ><br>
+    <label for="wednesdayPM">Afternoon Session</label>
+    <input type="checkbox" name="wednesdayPM" id="wednesdayPM" >
+    <h3>Thursday</h3>
+    <label for="thursdayAM">Morning Session</label>
+    <input type="checkbox" name="thursdayAM" id="thursdayAM" ><br>
+    <label for="thursdayPM">Afternoon Session</label>
+    <input type="checkbox" name="thursdayPM" id="thursdayPM" >
+    <h3>Friday</h3>
+    <label for="fridayAM">Morning Session</label>
+    <input type="checkbox" name="fridayAM" id="fridayAM"><br>
+    <label for="fridayPM">Afternoon Session</label>
+    <input type="checkbox" name="fridayPM" id="fridayPM">
+    <h3>Saturday</h3>
+    <label for="saturdayAM">Morning Session</label>
+    <input type="checkbox" name="saturdayAM" id="saturdayAM"><br>
+    <label for="saturdayPM">Afternoon Session</label>
+    <input type="checkbox" name="saturdayPM" id="saturdayPM">
+    <h3>Sunday</h3>
+    <label for="sundayAM">Morning Session</label>
+    <input type="checkbox" name="mondasundayAMyTime1" id="sundayAM"><br>
+    <label for="sundayPM">Afternoon Session</label>
+    <input type="checkbox" name="sundayPM" id="sundayPM">
+    
+    <!--Submit button to enter the times-->
+    </br>
+    <button type="submit" class="btn btn-primary">Create timetable</button>
+
+</form>
+{% endif %}
+{% endblock %} 
