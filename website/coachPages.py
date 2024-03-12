@@ -27,7 +27,7 @@ def findLastMonday(currdate):
     return currdate - timedelta(days=daysAhead)
 
 
-#Route for the coa ch's dashboard page
+#Route for the coach's dashboard page
 @coachpages.route("/TodaySession", methods=['POST', 'GET'])  
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachTodaySession():
@@ -426,6 +426,33 @@ def coachGoals():
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachBaseTimes(): 
     events = Event.query.all()
+    if request.method == 'POST':
+        gender = request.form.get('gender')
+        poolDistance = request.form.get('poolDistance')
+        stroke = request.form.get('stroke')
+        distance = request.form.get('distance')
+        timeM = request.form.get('timeM')
+        timeS = request.form.get('timeS')
+        timeMS = request.form.get('timeMS')
+        
+        if timeM == '' or timeS == '' or timeMS == '':
+            flash('Please enter a time.', category='error')
+            return redirect(url_for('coachPages.coachBaseTimes'))
+        else:
+            timeM = int(timeM)
+            timeS = int(timeS)
+            timeMS = int(timeMS)
+        
+        chosenEvent = Event.query.filter_by(gender=gender,poolDistance=poolDistance,
+                                            stroke=stroke,distance=distance).first()
+        if chosenEvent:
+            basetime = timeM*60+timeS+timeMS/100
+            chosenEvent.baseTime = basetime
+            db.session.commit()
+            flash('Time entered!', category="success")
+        else:
+            flash('Please enter a valid event', category="error")
+
     return render_template("coachBaseTimes.html", events=events) #render coach base times template
 
 @coachpages.route("/BestTimes", methods=['GET', 'POST']) 

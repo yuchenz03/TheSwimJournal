@@ -55,6 +55,22 @@ The Swim Journal | Settings
             class="form-control"
             />
         </div>
+        <div class="form-group">
+            <label for="gender">Gender</label>
+            <select 
+            name="gender" 
+            id="gender" 
+            class="form-control"
+            />
+                {% if user.gender == 'F'%}
+                <option value="F">Female</option>
+                <option value="M">Male</option>
+                {% else %}
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                {% endif %}
+        </select>
+        </div>
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
 {% endblock %}

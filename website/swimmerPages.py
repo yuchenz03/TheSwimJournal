@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 import sqlite3
 from random import randint
 import json
-import datetime
+from datetime import date
 
 swimmerpages = Blueprint("swimmerPages", __name__)
 
@@ -29,7 +29,7 @@ def swimmerTodaySession():
         name=current_user.forename.capitalize()
     else:
         name=""
-    return render_template("swimmerTodaySession.html", name = name) 
+    return render_template("swimmerTodaySession.html", name=name) 
    
 
 @login_required
@@ -61,6 +61,7 @@ def swimmerSettings():
         squads_id = request.form['squads_id']
         password1 = request.form['password1']
         password2 = request.form['password2']
+        gender = request.form['gender']
         
         if len(forename) != 0 and len(forename) < 2: #if invalid forename entered
             flash('First name must be greater than 1 character.', category='error') #flash error message
@@ -72,6 +73,9 @@ def swimmerSettings():
             flash('Passwords don\'t match.', category='error') #flash error message
         elif len(password1) != 0 and not isValid(password1): #if invalid password entered
             flash('Password must contain letters, numbers and special characters.', category='error') #flash error message
+        
+        if gender != current_user.gender:
+            current_user.gender = gender
         
         # If you want to update the password, handle it securely (e.g., hashing) before saving it.
         current_user.forename = forename #change forename
@@ -95,7 +99,7 @@ def swimmerSettings():
 @login_required
 @swimmerpages.route("/Goals", methods=["GET","POST"]) 
 def swimmerGoals():
-    today = datetime.date.today()
+    today = date.today()
     year = today.year
     if request.method == 'POST': 
         seasonGoal = request.form.get('seasonGoal') #Gets the goal from the HTML 

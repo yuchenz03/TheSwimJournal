@@ -8,7 +8,7 @@ The Swim Journal | Base Times
 <div>You can find the base times at this link: 
     <a href="https://www.worldaquatics.com/swimming/points">World Aquatics Page</a>
 </div>
-
+<form method="POST">
   <label for="gender"></label>
   <select name='gender' id='gender' class="form-control">
     <option value="">Choose event gender: </option>
@@ -44,8 +44,13 @@ The Swim Journal | Base Times
     <option value="1500m">1500m</option>
   </select><br>
   
-  <label for="time">Input base time:</label>
-  <input name="timeM" id="timeM">:
-  <input name="timeS" id="timeS">.
-  <input name="timeMS" id="timeMS">
+  <label for="timeM">Input base time:</label>
+  <input name="timeM" id="timeM" type="number" min="0" max="30">:
+  <label for="timeS"></label>
+  <input name="timeS" id="timeS" type="number" min="0" max="60">.
+  <label for="timeMS"></label>
+  <input name="timeMS" id="timeMS" type="number" min="0" max="100">
+<br>
+<button type="submit" class="btn btn-primary">Add time</button>  
+</form>
   {% endblock %}
