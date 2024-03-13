@@ -1,98 +1,129 @@
 {% extends "swimmerBase.html" %}
 {% block title %}
-The Swim Journal | Dashboard
-{% endblock %}
-{% block sidenav %}
-<!--This is used in the dropdown list-->
-  <script>  
-  function favTutorial() {  
-  var mylist = document.getElementById("myList");  
-  document.getElementById("favourite").value = mylist.options[mylist.selectedIndex].text;  
-  }  
-  </script> 
-<!--This is used to delete certain times-->
-<script type="text/javascript">
-    function deleteTimes(timeID) {
-fetch("/delete-time", {
-  method: "POST",
-  body: JSON.stringify({ timeID: timeID }),
-}).then((_res) => {
-  window.location.href = "/swimmerPBs";
-});
-}
-</script>
-    <!--This is the side navbar-->
-    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 100%;left: 0;background:#E4FCFF;width: 140px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
-      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 15px; top: 10px" href="/swimmer/Session">
-        <span class=""nav-tiem">Today's Session</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Journal">
-        <span class=""nav-tiem">Journal</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Goals">
-        <span class=""nav-tiem">Goals</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/PBs">
-        <span class=""nav-tiem">Personal Bests</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/swimmer/Settings">
-        <span class=""nav-tiem">Account Settings</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
-        <span class=""nav-tiem">Logout</span>
-      </a>
-</nav>
+The Swim Journal | Competitions
 {% endblock %}
 
+{% block style%}
+<style>
+  /* CSS used to display the table of swimmers */
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+  /*Styling for the content container*/
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+
+  /*Styling for the left container*/
+  .left {
+    flex: 50%;
+    padding: 8px;
+    margin-right: 8px
+  }
+
+  /*Styling for the right container*/
+  .right {
+    flex: 50%;
+    padding: 16px;
+    border-left: 1px solid grey
+  }
+</style>
+{% endblock %}
 {% block content %}
-<h1>Personal Bests</h1>
-<ul class="list-group list-group-flush" id="times">
-    {% for event in events %}
-        <table>
-            <tr>
-                <th>{{event.distance+event.stroke}}</th>
-                <th>
-                    {{time.time}} 
-                </th>
-                <th>
-                    {{time.competition}} 
-                    <button type="button" class="close" onClick="deleteTimes('{{time.id}}')">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                </th>
-            </tr>
-        </table>
-    {% endfor %}
-  </ul>
-  <form method="POST">
-    <label for="event">Event</label>
-    <input
-      type="text"
-      id="event"
-      name="event"
-      class="form-control"
-      placeholder="Enter Event: (distance) (stroke)"
-    />
-    <label for="time">Time</label>
-    <input
-      type="text"
-      id="time"
-      name="time"
-      class="form-control"
-      placeholder="Enter Time"
-    />
-    <label for="competition">Competition</label>
-    <input
-      type="text"
-      id="competition"
-      name="competition"
-      class="form-control"
-      placeholder="Enter Competition"
-    />
-    <br />
-    <div>
-      <button type="submit" class="btn btn-primary">Add Entry</button>
-    </div>
-  </form>
-{% endblock %}
+<div class="container">
+  <div class="left">
+    <h1>Competitions</h1>
+    <h2>View Past Competitions</h2>
+    {% if allCompetitions|length == 0 %}
+    No competitions to view.
+    {% else %}
+    <form method="POST">
+      <label for="selectedCompetitionID"></label>
+      <select name="selectedCompetitionID" id="selectedCompetitionID" class="form-control">
+        <option value="">Choose a competition to view: </option>
+        {% for competition in allCompetitions %}
+        <option value="{{competition.id}}">{{ competition.name }} </option>
+        {% endfor %}
+      </select>
+      <br>
+      <button type="submit" class="btn btn-primary">Choose Competition</button>
+    </form>
+    {% if selectedCompetition != None%}
+    <br>
+    <h3> {{selectedCompetition.name}}, {{selectedCompetition.date|replace("00:00:00","")}} </h3>
+    <h5>Events</h5>
+    <table>
+      <tr>
+        <th>Event</th>
+        <th>Time</th>
+        <th>FINA Points</th>
+      </tr>
+      {% for event in chosenCompEvents%}
+      <tr>
+        <th>{{ event.distance }} {{event.stroke|capitalize}}</th>
+        <th>{{chosenCompTimes[loop.index0].timeSwam}}</th>
+        <th>{{chosenCompTimes[loop.index0].finaPoints}}</th>
+      </tr>
+      {% endfor %}
+    </table>
+    <!--Displaying all the events the swimmer swam at this competition-->
+    {% endif %}
+    {% endif %}
+  </div>
 
+  <div class="right">
+    <h1></h1>
+    <h2>Create New Competitions</h2>
+    <form method="POST">
+      <label for="compName">Competition Name: </label>
+      <input type="text" name="compName" id="compName" class="form-control" />
+      <label for="compDate">Competition Date: </label>
+      <input type="date" name="compDate" id="compDate" class="form-control" />
+      <label for="poolLength">Length of Pool: </label>
+      <select name="poolLength" id="poolLength" class="form-control" />
+      <option value="">Choose a length:</option>
+      <option value="SCM">Short Course Meters</option>
+      <option value="LCM">Long Course Meters</option>
+      <option value="SCY">Short Course Yards</option>
+      </select>
+      <label for="eventNum">Number of Events: </label>
+      <input type="number" name="eventNum" id="eventNum" class="form-control" min="1" max="20" />
+      <br>
+      <button type="submit" class="btn btn-primary">Create Competition</button>
+    </form>
+
+    {% if eventNum != 0%}
+    <form method="POST">
+      {% for i in range(eventNum)%}
+      <div>Event {{i+1}}</div>
+      <select name="events[]">
+        <option value="" class="form-control">Choose event: </option>
+        {% for event in allEvents %}
+        <option value="{{event.id}}" class="form-control">{{ event.distance }} {{event.stroke|capitalize}}</option>
+        {% endfor %}
+      </select>
+      <div>Event {{i+1}} Time</div>
+      <input type="number" step="0.01" min="0.01" name="times[]" class="form-control">
+      {% endfor %}
+      <br>
+      <button type="submit" class="btn btn-primary">Enter times</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

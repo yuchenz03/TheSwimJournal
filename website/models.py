@@ -47,6 +47,7 @@ class SessionWorkoutsLink(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sessionID = db.Column(db.Integer, db.ForeignKey('session.id'))
     sessionWorkoutID = db.Column(db.Integer, db.ForeignKey('sessionworkout.id'))
+    workoutType = db.Column(db.String(50)) #land or pool
     
 class User(db.Model, UserMixin): #Creating the user model
     __tablename__ = 'user'
@@ -85,6 +86,7 @@ class SwimmerSession(db.Model):
     journalEntry = db.Column(db.String(1000)) #paragraph
     journalPrivacy = db.Column(db.String(50)) #public or private
     userID = db.Column(db.Integer, db.ForeignKey('user.id')) #foreign key for user
+    dateCreated = db.Column(db.DateTime(timezone=True), default=func.now())
 
 class CoachSession(db.Model):
     __tablename__ = 'coachsession'
@@ -100,7 +102,6 @@ class CompetitionTimes(db.Model):
     timeSwam = db.Column(db.Float) #Time swam in seconds
     competitionID = db.Column(db.Integer, db.ForeignKey('competition.id')) #foreign key for competition
     finaPoints = db.Column(db.Integer) #FINA points scored from this swim
-    splits = db.relationship('Split', backref="competitiontimes")
     eventID = db.Column(db.Integer, db.ForeignKey('event.id'))
     
 class Competition(db.Model):
@@ -110,13 +111,6 @@ class Competition(db.Model):
     date = db.Column(db.DateTime(timezone=True), default=func.now()) #date of competition
     poolLength = db.Column(db.String(3)) #SCM, SCY, LCM
     competitionTimes = db.relationship('CompetitionTimes', backref="competition") 
-    
-class Split(db.Model):
-    __tablename__ = 'split'
-    id = db.Column(db.Integer, primary_key=True)
-    competitionTimes = db.Column(db.Integer, db.ForeignKey('competitiontimes.id')) #foreign key for competitionrecord
-    splitNum = db.Column(db.Integer) #the split number - 1 for first 50, etc. 
-    splitTime = db.Column(db.Float) #the split time for that 50 and previous ones
     
 class Event(db.Model):
     __tablename__ = 'event'

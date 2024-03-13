@@ -2,26 +2,25 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8"> <!--This line defines the character set used in the webpage's encoding-->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">  <!--this line ensures that the latest available rendering engine is used to render a web page-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <!--This scales the website so that it fits on any screen-->
-   <!--importing bootstrap-->
-  <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-    crossorigin="anonymous"
-  />
-  <link
-    rel="stylesheet"
-    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-    crossorigin="anonymous"
-  />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!--this line ensures that the latest available rendering engine is used to render a web page-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--This scales the website so that it fits on any screen-->
+  <!--importing bootstrap-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    crossorigin="anonymous" />
   <!--The below line is used to allow javascript to be used -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-  
-  <title>{% block title %}{% endblock %}</title> <!--This line allows children pages to have their own individual title-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+
+  <title>{% block title %}{% endblock %}</title>
+  <!--This line allows children pages to have their own individual title-->
   {% block head %}{% endblock %} <!--This line allows children pages to have their own individual content in the head-->
 </head>
 
@@ -31,81 +30,91 @@
 {% block style %}{% endblock %}
 
 <body style="background: #F2FAFB"> <!--this line dictates the background colour-->
-    <!--This is the top navbar-->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-    
-    <!--This is the side navbar-->
-    <nav style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 150%;left: 0;background:#E4FCFF;width: 140px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/TodaySession">
-        <span class=""nav-tiem">Today's Session</span>
-      </a>
-      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/PreviousSessions">
-        <span class=""nav-tiem">Previous Sessions</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Timetables">
-        <span class=""nav-tiem">Timetables</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Workouts">
-        <span class=""nav-tiem">Workouts</span>
-      </a>
-      <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Exercises">
-        <span class=""nav-tiem">Exercises</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Competitions">
-        <span class=""nav-tiem">Competitions</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/BestTimes">
-        <span class=""nav-tiem">Best Times</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Goals">
-        <span class=""nav-tiem">Goals</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/BaseTimes">
-        <span class=""nav-tiem">Base Times</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Squads">
-        <span class=""nav-tiem">Squads</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/coach/Settings">
-        <span class=""nav-tiem">Account Settings</span>
-      </a>
-      <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;" href="/logout">
-        <span class=""nav-tiem">Logout</span>
-      </a>
-</nav>
+  <!--This is the top navbar-->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
 
-    <nav class="navbar navbar-expand-md navbar-light" style="background-color: #E4FCFF; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
-      <!--These are the links for each page/ redirectory shown in the nav bar-->
-      <a class="navbar-brand" href="/coach/TodaySession" style="font-family: Times New Romans; font-weight: bold; font-variant: small-caps;"><h1>The Swim Journal</h1></a>
-    </nav>
+  <!--This is the side navbar-->
+  <nav
+    style="font-family: Times New Roman; position: absolute;top:83px;bottom: 0;height: 150%;left: 0;background:#E4FCFF;width: 140px;overflow: hidden;transition: width 0.2s linear;padding: 10px;text-align: left;">
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/TodaySession">
+      <span class="" nav-tiem">Today's Session</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/Timetables">
+      <span class="" nav-tiem">Timetables</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/Workouts">
+      <span class="" nav-tiem">Workouts</span>
+    </a>
+    <a style="position: relative; color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/Exercises">
+      <span class="" nav-tiem">Exercises</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/Goals">
+      <span class="" nav-tiem">Goals</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/BaseTimes">
+      <span class="" nav-tiem">Base Times</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/Squads">
+      <span class="" nav-tiem">Squads</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/coach/Settings">
+      <span class="" nav-tiem">Account Settings</span>
+    </a>
+    <a style="position: relative;color: rgb(85, 83, 83);font-size: 18px;display: table;width: 300px; margin-bottom: 5px;"
+      href="/logout">
+      <span class="" nav-tiem">Logout</span>
+    </a>
+  </nav>
 
-<!--A container that stores the content that belongs in the coach pages-->
-<div class="container" style="font-family: Times New Roman; position: absolute; top: 90px; left: 140px">
-  <!--This line allows children pages to have their own individual content-->
-  {% block content %}{% endblock %}
-</div>
-<!--Jinja that allows error or confirmation messages to be flashed-->
-  {% with messages = get_flashed_messages(with_categories=True) %} 
+  <nav class="navbar navbar-expand-md navbar-light"
+    style="background-color: #E4FCFF; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+    <!--These are the links for each page/ redirectory shown in the nav bar-->
+    <a class="navbar-brand" href="/coach/TodaySession"
+      style="font-family: Times New Romans; font-weight: bold; font-variant: small-caps;">
+      <h1>The Swim Journal</h1>
+    </a>
+  </nav>
+
+  <!--A container that stores the content that belongs in the coach pages-->
+  <div class="container" style="font-family: Times New Roman; position: absolute; top: 90px; left: 140px">
+    <!--This line allows children pages to have their own individual content-->
+    {% block content %}{% endblock %}
+  </div>
+  <!--Jinja that allows error or confirmation messages to be flashed-->
+  {% with messages = get_flashed_messages(with_categories=True) %}
   {% if messages %}
   {% for category, message in messages %}
-    {% if category == "error" %}
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    {% else %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+  {% if category == "error" %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  {% else %}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
     {% endif %}
-  {% endfor %}
-{% endif %}
-{% endwith %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
   </div>
 </body>
+
 </html>

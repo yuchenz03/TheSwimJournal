@@ -5,6 +5,25 @@ The Swim Journal | Dashboard
 
 {% block style%}
 <style>
+    /*Styling for the content container*/
+    .container {
+        display: flex;
+        height: 100vh;
+    }
+
+    /*Styling for the left container*/
+    .left {
+        flex: 50%;
+        padding: 8px;
+        margin-right: 8px;
+    }
+
+    /*Styling for the right container*/
+    .right {
+        flex: 50%;
+        padding: 16px;
+    }
+
     /* CSS used to display the table of attendance */
     table {
         font-family: arial, sans-serif;
@@ -18,48 +37,94 @@ The Swim Journal | Dashboard
         text-align: left;
         padding: 8px;
     }
-   
+
     tr:nth-child(even) {
         background-color: #dddddd;
     }
 </style>
 {% endblock %}
 
+
 {% block content %}
-<h1>Welcome, {{name}}!</h1>
-{% if todaySessions|length == 0 %}
-No sessions today.
-{% else %}
-<form method="POST">
-    <label for="selectedSessionID"></label>
-    <select name="selectedSessionID" id="selectedSessionID" class="form-control">
-        <option value="">Choose a session to view: </option>
-        {% for session in todaySessions %}
-        <option value="{{session.id}}">{{ sessionSquad[loop.index0] }} {{ session.time }}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <button type="submit" class="btn btn-primary">Choose Session</button>
-</form>
-{% if selectedSession != None %}
-<h2>Attendance</h2>
-<table>
-    <tr>
-        <th>Swimmer</th>
-        <th>Ability to swim</th>
-        <th>Attended</th>
-    </tr>
-    {% for swimmer in swimmers %}
-    <tr>
-        <td>{{swimmer.forename}} {{swimmer.surname}}</td>
-        <td></td>
-        <td></td>
-    </tr>
-    {% endfor %}
-    <h2>Create Session</h2>
-
-    <h2>Journal</h2>
-    {% endif %}
-    {% endif %}
-
-    {% endblock %}
+<div class="container">
+    <div class="left">
+        <h1>Welcome, {{name}}!</h1>
+        {% if todaySessions|length == 0 %}
+        No sessions today.
+        {% else %}
+        <form method="POST">
+            <label for="selectedSessionID"></label>
+            <select name="selectedSessionID" id="selectedSessionID" class="form-control">
+                <option value="">Choose a session to view: </option>
+                {% for session in todaySessions %}
+                <option value="{{session.id}}">{{ sessionSquad[loop.index0] }} {{ session.time }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <button type="submit" class="btn btn-primary">Choose Session</button>
+        </form>
+        {% if selectedSession != None %}
+        <br>
+        <form method="POST">
+            <h2>Create Session</h2>
+            <div>Date: {{todayDate.day}}/{{todayDate.month}}/{{todayDate.year}} </div>
+            <label for="swimSessionID"></label>
+            <select name="swimSessionID" id="swimSessionID" class="form-control">
+                <option value="">Choose a swim workout:</option>
+                {% for workout in allWorkouts %}
+                {% if workout.workoutType == 'pool'%}
+                <option value="{{workout.id}}">{{ workout.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <br>
+            <select name="landSessionID" id="landSessionID" class="form-control">
+                <option value="">Choose a land training workout:</option>
+                {% for workout in allWorkouts %}
+                {% if workout.workoutType == 'land'%}
+                <option value="{{workout.id}}">{{ workout.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <br>
+            <div class="form-group">
+                <label for="journal">
+                    <h2>Journal Entry</h2>
+                </label>
+                <textarea type="textarea" name="journal" id="journal"
+                    class="form-control">{{coachSession.journalEntry}} </textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save details</button>
+        </form>
+        <br>
+    </div>
+    <div class="right">
+        <h2>Attendance</h2>
+        {% if swimmers|length == 0 %}
+        <div>No swimmers to display.</div>
+        {% else %}
+        <table>
+            <tr>
+                <th>Swimmer</th>
+                <th>Ability to swim</th>
+                <th>Attended</th>
+                <th>Journal Entry</th>
+            </tr>
+            {% for swimmer in swimmers %}
+            <tr>
+                <td>{{swimmer.forename}} {{swimmer.surname}}</td>
+                <td> {{ swimmerSessions[loop.index0].abilityToSwim }} </td>
+                <td> {{ swimmerSessions[loop.index0].attendance }} </td>
+                {% if swimmerSessions[loop.index0].journalPrivacy == "public" %}
+                <td> {{swimmerSessions[loop.index0].journalEntry}} </td>
+                {% else %}
+                <td> Journal Privated </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+            {% endif %}
+    </div>
+</div>
+{% endblock %}

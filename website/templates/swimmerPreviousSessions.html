@@ -1,22 +1,96 @@
 {% extends "swimmerBase.html" %}
 {% block title %}
-The Swim Journal | Dashboard
+The Swim Journal | Previous Sessions
+{% endblock %}
+
+{% block style%}
+<style>
+  /* CSS used to display the table of swimmers */
+  table {
+    font-family: Times New Romans;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+
+  /*Styling for the content container*/
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+
+  /*Styling for the left container*/
+  .left {
+    flex: 50%;
+    padding: 8px;
+    margin-right: 8px
+  }
+
+  /*Styling for the right container*/
+  .right {
+    flex: 50%;
+    padding: 16px;
+    border-left: 1px solid grey
+  }
+</style>
 {% endblock %}
 
 {% block content %}
-<h1>Session</h1>
-<div class="container" style="border: 1px solid #ccc; margin:0px; margin-bottom:20px; height: relative; border-radius: 15px; width:relative; position: relative">
-    
-<!-- </div>
-<div class="container", style="border: 1px solid #ccc; margin:0px; height: 200px;border-radius: 15px; width:850px; position: relative"">
-  <h2>Post-session Thoughts</h2>
-  <form method="POST">
-    <textarea name="entry" id="entry" class="form-control"></textarea>
-    <br />
-    <div>
-      <button type="submit" class="btn btn-primary">Add Entry</button>
-    </div>
-  </form>
-</div> -->
-{% endblock %}
+<div class="container">
+  <div class="left">
+    <h1>Previous Sessions</h1>
+    <h2>Review Past Week</h2>
+    <div>Note that if your session information was incomplete, the following information may be inaccurate.</div>
+    <br>
+    <h5>Dates: {{dateweek.day}}/{{dateweek.month}}/{{dateweek.year}} -
+      {{datetoday.day}}/{{datetoday.month}}/{{datetoday.year}}</h5>
+    <h5>Average Ability to Swim: {{averageATS}}</h5>
+    <h5>Average Rate of Fatigue: {{averageRAF}}</h5>
+    <h5>Number of sessions attended: {{sessionNum}}</h5>
 
+
+  </div>
+  <div class="right">
+    <h1></h1>
+    <h2>View Past Session</h2>
+    <form method="POST">
+      <label for="selectedSessionID"></label>
+      <select name="selectedSessionID" id="selectedSessionID" class="form-control">
+        <option value="">Choose a session to view: </option>
+        {% for session in allSessions %}
+        <option value="{{session.id}}">{{ session.date | replace("00:00:00","") }} {{ session.time }} Session</option>
+        {% endfor %}
+      </select>
+      <br>
+      <button type="submit" class="btn btn-primary">Choose Session</button>
+    </form>
+
+    {% if selectedSession != None %}
+    <br>
+    <table>
+      <tr>
+        <td>Attended?</td>
+        <td>{{ selectedSession.attendance }}</td>
+      </tr>
+      <tr>
+        <td>Ability to Swim</td>
+        <td>{{ selectedSession.abilityToSwim }}</td>
+      </tr>
+      <tr>
+        <td>Rate of Fatigue</td>
+        <td>{{ selectedSession.RAF }}/10</td>
+      </tr>
+      <tr>
+        <td>Journal Entry</td>
+        <td>{{ selectedSession.journalEntry }}</td>
+      </tr>
+    </table>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -4,24 +4,27 @@ The Swim Journal | Security Question
 {% endblock %}
 {% block content %}
 <div class="container" style="margin-top: 20px; margin-left:0px">
-    <form method="POST">
-      <!--The form containing all the possible security questions-->
-        <label for="SQquestion">Select Security Question:</label>
-        <select name="SQquestion" id="SQquestion" class="form-control">
-          <option value="What is the name of your first dog?">What is the name of your first dog?</option>
-          <option value="What is the middle name of your youngest sibling?">What is the middle name of your youngest sibling?</option>
-          <option value="What is the name of your favorite stuffed animal?">What is the name of your favorite stuffed animal?</option>
-          <option value="In what city did your parents meet?">In what city did your parents meet?</option>
-          <option value="What was the first exam you failed?">What was the first exam you failed?</option>
-8        </select>
-        Your answer:
-        <!--Asking the user to input a correct answer to the security question-->
-        <input name="SQanswer" id="SQanswer" class="form-control">
-        <br/>
-        <div>
-          <!--A submit button for the form-->
-          <button type="submit" class="btn btn-primary">Submit security question</button>
-        </div>
-      </form>
+  <form method="POST">
+    <!--The form containing all the possible security questions-->
+    <label for="SQquestion">Select Security Question:</label>
+    <select name="SQquestion" id="SQquestion" class="form-control">
+      <option value="What is the name of your first dog?">What is the name of your first dog?</option>
+      <option value="What is the middle name of your youngest sibling?">What is the middle name of your youngest
+        sibling?</option>
+      <option value="What is the name of your favorite stuffed animal?">What is the name of your favorite stuffed
+        animal?</option>
+      <option value="In what city did your parents meet?">In what city did your parents meet?</option>
+      <option value="What was the first exam you failed?">What was the first exam you failed?</option>
+      8
+    </select>
+    Your answer:
+    <!--Asking the user to input a correct answer to the security question-->
+    <input name="SQanswer" id="SQanswer" class="form-control">
+    <br />
+    <div>
+      <!--A submit button for the form-->
+      <button type="submit" class="btn btn-primary">Submit security question</button>
+    </div>
+  </form>
 </div>
 {% endblock %}

@@ -6,28 +6,16 @@ The Swim Journal | Login
 {% endblock %}
 {% block content %}
 <div class="container" style="margin-top: 20px; margin-left:0px">
-<form method="POST">
-  <!--form that requests the email and password required to login a user-->
+  <form method="POST">
+    <!--form that requests the email and password required to login a user-->
     <h3>Login</h3>
     <div class="form-group">
       <!--requesting the email of the user-->
       <label for="email">Email</label>
-      <input
-        type="text"
-        id="email"
-        name="email"
-        class="form-control"
-        placeholder="Enter Email"
-      />
+      <input type="text" id="email" name="email" class="form-control" placeholder="Enter Email" />
       <!--requesting the password of the user-->
       <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        class="form-control"
-        placeholder="Enter Password"
-      />
+      <input type="password" id="password" name="password" class="form-control" placeholder="Enter Password" />
       <br />
       <div>
         <!-- submit button -->

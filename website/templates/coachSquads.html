@@ -4,98 +4,100 @@ The Swim Journal | Dashboard
 {% endblock %}
 {% block style%}
 <style>
-/* CSS used to display the table of swimmers */
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
+  /* CSS used to display the table of swimmers */
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
 
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
+  td,
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
 
-tr:nth-child(even) {
-  background-color: #dddddd;
-}
-/*Styling for the content container*/
-.container {
-  display: flex;
-  height: 100vh; 
-}
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
 
-/*Styling for the left container*/
-.left {
-  flex: 60%; 
-  padding: 8px;
-  margin-right: 8px
-}
+  /*Styling for the content container*/
+  .container {
+    display: flex;
+    height: 100vh;
+  }
 
-/*Styling for the right container*/
-.right {
-  flex: 40%; 
-  padding: 16px;
-  border-left: 1px solid grey
-}
+  /*Styling for the left container*/
+  .left {
+    flex: 60%;
+    padding: 8px;
+    margin-right: 8px
+  }
+
+  /*Styling for the right container*/
+  .right {
+    flex: 40%;
+    padding: 16px;
+    border-left: 1px solid grey
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-<div class="left">
-<!--Displaying the codes of each squad-->
-<h2>My Squad</h2>
-{% if squads|length == 0 %}
-No squads created.
-{% else %}
-<table>
-  <tr>
-    <th>Squad</th>
-    <th>Code</th>
-  </tr>
-  {% for squad in squads %}
-    <tr>
-      <td>{{squad.squadName}}</td>
-      <td>{{squad.id}}</td>
-    </tr>
-  {% endfor %}
-</table>
-{% endif %}
-<p></p>
+  <div class="left">
+    <!--Displaying the codes of each squad-->
+    <h2>My Squad</h2>
+    {% if squads|length == 0 %}
+    No squads created.
+    {% else %}
+    <table>
+      <tr>
+        <th>Squad</th>
+        <th>Code</th>
+      </tr>
+      {% for squad in squads %}
+      <tr>
+        <td>{{squad.squadName}}</td>
+        <td>{{squad.id}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+    <p></p>
 
-<!--Displaying the members of each squad, including both swimmers and coaches-->
-<h2>My Swimmers</h2>
-{% if members|length == 0 %}
-No members to show.
-{% else %}
-<table>
-  <tr>
-    <th>Member</th>
-    <th>Squad</th>
-  </tr>
-  {% for member in members %}
-  <tr>
-    <td>{{member.forename}} {{member.surname}}</td>
-    <td>{{memberSquads[loop.index0]}}</td>
-  </tr>
-  {% endfor %}
-{% endif %}
-</table>
+    <!--Displaying the members of each squad, including both swimmers and coaches-->
+    <h2>My Swimmers</h2>
+    {% if members|length == 0 %}
+    No members to show.
+    {% else %}
+    <table>
+      <tr>
+        <th>Member</th>
+        <th>Squad</th>
+      </tr>
+      {% for member in members %}
+      <tr>
+        <td>{{member.forename}} {{member.surname}}</td>
+        <td>{{memberSquads[loop.index0]}}</td>
+      </tr>
+      {% endfor %}
+      {% endif %}
+    </table>
 
-</div>
-<div class="right">
-<!--Creating a new squad-->
+  </div>
+  <div class="right">
+    <!--Creating a new squad-->
     <h3>Create a Squad</h3>
     <form method="POST">
-        <label for="squadName">Squad Name:</label>
-        <input type="text" id="squadName" name="squadName" required><br><br>
-        <!--Submit button-->
-        <button type="submit" class="btn btn-primary">Create Squad</button>
+      <label for="squadName">Squad Name:</label>
+      <input type="text" id="squadName" name="squadName" required><br><br>
+      <!--Submit button-->
+      <button type="submit" class="btn btn-primary">Create Squad</button>
     </form>
 
-</div>
+  </div>
 </div>
 
-{% endblock %} 
+{% endblock %}

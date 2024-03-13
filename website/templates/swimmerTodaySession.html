@@ -1,8 +1,6 @@
-<!--CORRECTED-->
-
 {% extends "swimmerBase.html" %}
 {% block title %}
-The Swim Journal | Dashboard
+The Swim Journal | Today's Session
 {% endblock %}
 
 {% block style %}
@@ -22,7 +20,7 @@ The Swim Journal | Dashboard
 
     /*Styling for the right container*/
     .right {
-        flex: 50%; 
+        flex: 50%;
         padding: 16px;
     }
 </style>
@@ -30,9 +28,10 @@ The Swim Journal | Dashboard
 
 {% block content %}
 {% if sessions|length == 0 %}
-<h1>Welcome, {{name}}!</h1>
-<br>
-<div>No sessions today.</div>
+<div class="left">
+    <h1>Welcome, {{name}}!</h1>
+    <p>No sessions today.</p>
+</div>
 {% else %}
 <div class="container">
     <div class="left">
@@ -103,7 +102,7 @@ The Swim Journal | Dashboard
             &nbsp;&nbsp;&nbsp;&nbsp;
             <input type="range" id="hydration" name="hydration" min="0" max="5" step="1" value="3">
             <div>0 being feeling extremely thirsty, 5 being well-hydrated.</div>
-            <script>   
+            <script>
                 var slider4 = document.getElementById("hydration");
                 var output4 = document.getElementById("hydrationvalue");
                 output4.innerHTML = slider4.value;
@@ -121,26 +120,26 @@ The Swim Journal | Dashboard
                     class="form-control">{{swimmerSession.sessionGoal}} </textarea>
             </div>
 
-    
-        {% endif %}
-        {% endif %}
+
+            {% endif %}
+            {% endif %}
     </div>
     <div class="right">
         {% if selectedSession != None %}
         <h1></h1>
         <h2>Post-Session Reflections</h2>
-
-            <label for="RAF">Rate of Fatigue/10</label>
-            <input type="number" name="RAF" id="RAF" placeholder="{{swimmerSession.RAF}}" class="form-group" min="0" max="10">
-            <div class="form-group">
-                <label for="journal">Journal Entry</label>
-                <textarea type="textarea" name="journal" id="journal"
-                    class="form-control">{{swimmerSession.journalEntry}} </textarea>
-            </div>
-            <label for="journalPrivacy">Public?</label>
-            <input type="checkbox" name="journalPrivacy" id="journalPrivacy"><br>
-            <br>
-            <button type="submit" class="btn btn-primary">Save information</button>
+        <label for="RAF">Rate of Fatigue/10</label>
+        <input type="number" name="RAF" id="RAF" placeholder="{{swimmerSession.RAF}}" class="form-group" min="0"
+            max="10">
+        <div class="form-group">
+            <label for="journal">Journal Entry</label>
+            <textarea type="textarea" name="journal" id="journal"
+                class="form-control">{{swimmerSession.journalEntry}} </textarea>
+        </div>
+        <label for="journalPrivacy">Public?</label>
+        <input type="checkbox" name="journalPrivacy" id="journalPrivacy"><br>
+        <br>
+        <button type="submit" class="btn btn-primary">Save information</button>
         </form>
         {% endif %}
     </div>

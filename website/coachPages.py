@@ -1,7 +1,7 @@
 #importing all the dependencies
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, session #From the flask application, import Blueprint
 from . import db
-from .models import User, Event, Exercise, Squad, Session, SessionWorkoutExercises, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
+from .models import User, Event, Exercise, Squad, SessionWorkoutsLink, CoachSession, SwimmerSession, Session, SessionWorkoutExercises, SessionWorkout, SquadMembers #import the user, exercise and squad tables from the models page
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 from random import randint
@@ -31,34 +31,55 @@ def findLastMonday(currdate):
 @coachpages.route("/TodaySession", methods=['POST', 'GET'])  
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
 def coachTodaySession():
-    swimmers = []
-    user = User.query.filter_by(id=current_user.id).first() #ensure that a user with the current user's id exists
-    if user: #If the user exists
-        name=current_user.forename.capitalize() #retrieve the forename of the current user
-    else: #if the user doesn't exist
-        name="" #pass in empty string
+    swimmers = [] #Initializing values
     currtoday = date.today()
     currtime = time(0,0)
     datetime_combined = datetime.combine(currtoday, currtime)
     todaySessions = Session.query.filter_by(date=datetime_combined).all()
     userSquads = SquadMembers.query.filter_by(userID=current_user.id).all()
     userSquadIDs = []
+    selectedSession = None
+    swimmerSessions = []
+    coachSession = None
+    sessionSquad = []
+    
+    #finding the current user
+    user = User.query.filter_by(id=current_user.id).first() #ensure that a user with the current user's id exists
+    if user: #If the user exists
+        name=current_user.forename.capitalize() #retrieve the forename of the current user
+    else: #if the user doesn't exist
+        name="" #pass in empty string
+    
+    #retrieving all the workouts
+    allWorkouts = SessionWorkout.query.all()
+    
+    #finding all the squads the coach user is in
     for squad in userSquads:
         userSquadIDs.append(squad.squadID)
-    for session in todaySessions:
-        if session.squadID not in userSquadIDs:
-            todaySessions.remove(session)
-    sessionSquad = []
-    for session in todaySessions:
-        squad = Squad.query.filter_by(id=session.squadID).first()
+    
+    #Checking all sessions available today - if the coach is not in
+    #its corresponding squad, then don't display it
+    for _Session in todaySessions:
+        if _Session.squadID not in userSquadIDs:
+            todaySessions.remove(_Session)
+            
+    #storing the corresponding squads for each session in a list
+    for _Session in todaySessions:
+        squad = Squad.query.filter_by(id=_Session.squadID).first()
         sessionSquad.append(squad.squadName)
     
     if request.method == 'POST':
         selectedSessionID = request.form.get('selectedSessionID')
+        swimSessionID = request.form.get('swimSessionID')
+        landSessionID = request.form.get('landSessionID')
         if selectedSessionID == "":
             flash('Please choose a session.', category="error")
         else:
-            selectedSession = Session.query.filter_by(id=int(selectedSessionID)).first()
+            if selectedSessionID:
+                session['selectedSessionID'] = selectedSessionID
+            else:
+                selectedSessionID = session.get('selectedSessionID')
+            selectedSession = Session.query.filter_by(id=selectedSessionID).first()
             if not selectedSession:
                 flash('Session does not exist.', category="error")
                 return redirect(url_for('coachPages.coachTodaySession')) #refresh page
@@ -68,10 +89,37 @@ def coachTodaySession():
             for member in members:
                 userinstance = User.query.filter_by(id=member.userID).first()
                 if userinstance.role == "Swimmer":
+                    swimmerSessions.append(SwimmerSession.query.filter_by(userID=member.userID,sessionID=selectedSession.id).first())
                     swimmers.append(userinstance)
+            
+            #handling the form inputs
+            coachSession = CoachSession.query.filter_by(sessionID=selectedSession.id,userID=current_user.id).all()
+            if coachSession:
+                coachSession.journalEntry = coachSession.journalEntry
+                db.session.commit()
+                flash("Journal entry successfully edited!", category="success")
+            
+            landSession = SessionWorkoutsLink.query.filter_by(sessionID=selectedSession.id, workoutType="land").first()
+            swimSession = SessionWorkoutsLink.query.filter_by(sessionID=selectedSession.id, workoutType="swim").first()
+            sessionChanged = False
+            if landSessionID:
+                if landSession:
+                    landSession.sessionWorkoutID = landSessionID
+                else:
+                    db.session.add(SessionWorkoutsLink(sessionID=selectedSession.id, workoutType="land",sessionWorkoutID=landSessionID))
+                sessionChanged = True
+            if swimSessionID:
+                if swimSession:
+                    swimSession.sessionWorkoutID = swimSessionID
+                else:
+                    db.session.add(SessionWorkoutsLink(sessionID=selectedSession.id, workoutType="swim",sessionWorkoutID=swimSessionID))
+                sessionChanged = True
+            db.session.commit()
+            if sessionChanged == True:
+                flash("Sessions added!", category="success")
                 
-    return render_template("coachTodaySession.html", name=name, todaySessions=todaySessions, sessionSquad=sessionSquad,
-                           swimmers=swimmers) #render the coach dashboard template
+    return render_template("coachTodaySession.html", coachSession=coachSession, name=name, todaySessions=todaySessions, sessionSquad=sessionSquad,
+                           swimmers=swimmers, swimmerSessions=swimmerSessions, selectedSession=selectedSession, allWorkouts=allWorkouts, todayDate=currtoday) #render the coach dashboard template
 
 @coachpages.route("/Timetables", methods=['POST', 'GET'])
 @login_required 
@@ -128,13 +176,6 @@ def coachTimetables():
             flash('Timetable added!', category="success")
         
     return render_template("coachTimetable.html", squads=squads)
-
-#Route for the coach session page, supporting the post and get methods
-@coachpages.route("/PreviousSessions", methods=['POST','GET'])
-@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachPreviousSessions():
-    return render_template("coachPreviousSessions.html")
-
 
 @coachpages.route("/Exercises", methods=['POST','GET'])
 @login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
@@ -454,13 +495,3 @@ def coachBaseTimes():
             flash('Please enter a valid event', category="error")
 
     return render_template("coachBaseTimes.html", events=events) #render coach base times template
-
-@coachpages.route("/BestTimes", methods=['GET', 'POST']) 
-@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachBestTimes(): 
-    return render_template("CoachBestTimes.html", user=current_user) #render coach best times template
-
-@coachpages.route("/Competitions", methods=['GET', 'POST']) 
-@login_required #decorator to ensure only authenticated users can access this page, otherwise they are redirected to the login page
-def coachCompetitions(): 
-    return render_template("coachCompetitions.html", user=current_user) #render coach goals template

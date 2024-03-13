@@ -1,12 +1,13 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, session #From the flask application, import Blueprint
 from . import db
-from .models import User, Session, SquadMembers, Squad, Event, SwimmerSession
+from .models import User, Session, SquadMembers, Squad, Event, SwimmerSession, Competition, CompetitionTimes
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 import sqlite3
 from random import randint
 import json
-from datetime import date, time, datetime
+from datetime import date, time, datetime, timedelta
+import math
 
 swimmerpages = Blueprint("swimmerPages", __name__)
 
@@ -54,13 +55,15 @@ def swimmerTodaySession():
         sessionGoals = request.form.get('sessionGoals')
         RAF = request.form.get('RAF') 
         journal = request.form.get('journal')
-        journalPrivacy = request.form.get('journal')
+        journalPrivacy = request.form.get('journalPrivacy')
         
+        absenceReason = None
         selectedSession = Session.query.filter_by(id=selectedSessionID).first()
         if selectedSession:
             session['selectedSessionID'] = selectedSession.id
         if sleep != None:
-            ATT = 100*(0.1333*(10-int(stress))/10) + (0.1333*(10-int(fatigue))/10) + (0.1333*int(hydration)/5) + (int(sleep)/9)*0.6
+            ATT = 100*((0.1333*(10-int(stress))/10) + (0.1333*(10-int(fatigue))/10) + (0.1333*int(hydration)/5) + (int(sleep)/9)*0.6)
+            ATT = math.trunc(ATT)
             if attendance == "on":
                 attendance = True
             else:
@@ -107,17 +110,35 @@ def swimmerTodaySession():
 @login_required
 @swimmerpages.route("/PreviousSessions", methods=['GET', 'POST']) 
 def swimmerSession():
-    # if request.method == 'POST': 
-        # entry = request.form.get('entry')#Gets the entry from the HTML 
-        
-        # if len(entry) < 1:
-        #     flash('Entry is too short!', category='error') 
-        # else:
-        #     new_entry = Session(entry=entry, user_id=current_user.id)  #providing the schema for the note 
-        #     db.session.add(new_entry) #adding the note to the database 
-        #     db.session.commit()
-        #     flash('Entry added!', category='success')
-    return render_template("swimmerPreviousSessions.html", user=current_user)
+    attendedSessions = SwimmerSession.query.filter_by(userID=current_user.id).all()
+    selectedSession = None
+    datetoday = date.today() + timedelta(0)
+    dateweek = datetoday - timedelta(7)
+    allSessions = []
+    weekSessions = SwimmerSession.query.filter(SwimmerSession.dateCreated.between(dateweek, datetoday+timedelta(1))).all()
+    print(weekSessions)
+    ATSsum = 0
+    RAFsum = 0
+    averageATS = 0
+    averageRAF = 0
+    sessionNum = len(weekSessions)
+    if sessionNum > 0:
+        for _session in weekSessions:
+            ATSsum += _session.abilityToSwim
+            RAFsum += _session.RAF
+        averageATS = ATSsum // sessionNum
+        averageRAF = RAFsum // sessionNum
+    
+    for _session in attendedSessions:
+        allSessions.append(Session.query.filter_by(id=_session.sessionID).first())
+    
+    if request.method == "POST":
+        selectedSessionID = request.form.get('selectedSessionID')
+        selectedSession = SwimmerSession.query.filter_by(sessionID=selectedSessionID, userID=current_user.id).first()
+        if not selectedSession:
+            flash("Invalid session", category="error")
+    return render_template("swimmerPreviousSessions.html", selectedSession=selectedSession, allSessions=allSessions,
+                           sessionNum=sessionNum, averageATS=averageATS, averageRAF=averageRAF, datetoday=datetoday, dateweek=dateweek)
 
 @login_required
 @swimmerpages.route("/Settings", methods=['GET', 'POST']) 
@@ -189,35 +210,148 @@ def swimmerGoals():
 @login_required
 @swimmerpages.route("/Competitions", methods={'GET','POST'}) 
 def swimmerCompetitions():
-    # events = Event.query.all()
-    # if request.method == 'POST': 
-    #     event = request.form.get('event')
-    #     competition = request.form.get('competition')
-    #     time = request.form.get('time')#Gets the goal from the HTML 
+    allCompetitions = Competition.query.all()
+    selectedCompetition = None
+    allEvents = []
+    eventNum = 0
+    chosenCompEvents = []
+    chosenCompTimes = []
+    if request.method == "POST":
+        compName = request.form.get("compName")
+        compDate = request.form.get("compDate")
+        poolLength = request.form.get("poolLength")
+        eventNum = request.form.get("eventNum")
+        selectedCompetitionID = request.form.get("selectedCompetitionID")
+        compEvents = request.form.getlist("events[]")
+        compTimes = request.form.getlist("times[]")
         
-    #     if len(event) < 1:
-    #         flash('Invalid entry!', category='error') 
-    #     else:
-    #         new_note = Times(event = event, time = time, competition = competition, user_id=current_user.id)  #providing the schema for the note 
-    #         db.session.add(new_note) #adding the note to the database 
-    #         db.session.commit()
-    #         flash('Time added!', category='success')
-    return render_template("swimmerCompetitions.html")
-
-# #Used to delete times
-# @swimmerpages.route('/delete-time', methods=['POST'])
-# def delete_time():  
-#     time = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
-#     timeID = time['timeID']
-#     time = Times.query.get(timeID)
-#     if time:
-#         if time.user_id == current_user.id:
-#             db.session.delete(time)
-#             db.session.commit()
-
-#     return jsonify({})
+        if eventNum == None:
+            eventNum = 0
+        
+        if compDate != None: #If a date of competition is to be entered
+            if compDate == '':
+                flash('Please enter a competition date.', category="error")
+                return redirect(url_for('swimmerPages.swimmerCompetitions'))
+            dateFormat = "%Y-%m-%d" 
+            dateObject = datetime.strptime(compDate, dateFormat)+timedelta(0)
+        
+            compexists = Competition.query.filter_by(name=compName,date=dateObject,poolLength=poolLength).first()
+            if compexists:
+                flash('Competition already exists!', category="error")
+                return redirect(url_for('swimmerPages.swimmerCompetitions'))
+            if len(compName) < 2:
+                flash('Please enter a valid competition name.', category="error")
+            elif poolLength == "":
+                flash('Please enter a pool length.', category="error")
+            elif eventNum == None:
+                flash('Please choose a number of events.', category="error")
+            else:
+                newComp = Competition(name=compName, date=dateObject, poolLength=poolLength)
+                db.session.add(newComp)
+                db.session.commit()
+                currentCompetition = Competition.query.filter_by(name=compName, date=dateObject, poolLength=poolLength).first()
+                session['currentCompID'] = currentCompetition.id
+                session['eventNum'] = eventNum
+                allEvents = Event.query.filter_by(gender=current_user.gender,poolDistance=currentCompetition.poolLength).all()
+                flash("Competition created!", category="success")
+            
+        if compEvents != []:
+            eventNum = session.get('eventNum')
+            if len(compEvents) != int(eventNum) or "" in compEvents:
+                flash("Please choose events for all selections.",category="success")
+            else:
+                currentCompID = session.get('currentCompID')
+                currentCompetition = Competition.query.filter_by(id=currentCompID).first()
+                for i in range(len(compEvents)):
+                    compEvent = Event.query.filter_by(id=compEvents[i]).first()
+                    baseTime = compEvent.baseTime
+                    points = math.trunc(1000*(baseTime/float(compTimes[i]))**3)
+                    db.session.add(CompetitionTimes(finaPoints=points,timeSwam=compTimes[i],userID=current_user.id,competitionID=currentCompetition.id,eventID=compEvents[i]))
+                db.session.commit()
+                eventNum = 0
+                flash("Events entered!", category="success")
+                
+        if selectedCompetitionID:
+            selectedCompetition = Competition.query.filter_by(id=selectedCompetitionID).first()
+            chosenCompTimes = CompetitionTimes.query.filter_by(competitionID=selectedCompetitionID,userID=current_user.id).all()
+            for time in chosenCompTimes:
+                chosenCompEvents.append(Event.query.filter_by(id=time.eventID).first())
+            
+    return render_template("swimmerCompetitions.html", allCompetitions=allCompetitions, selectedCompetition=selectedCompetition,
+                           allEvents=allEvents, eventNum=int(eventNum), chosenCompEvents=chosenCompEvents,chosenCompTimes=chosenCompTimes)
 
 @login_required
 @swimmerpages.route("/Progression", methods={'GET', 'POST'})
 def swimmerProgression():
-    return render_template("swimmerProgression.html")
+    allEvents = Event.query.filter_by(gender=current_user.gender)
+    progressionType = None
+    bestTimes = []
+    eventNames = []
+    eventTimes = []
+    eventComp = []
+    eventDate = []
+    timesSwam = []
+    timeComp = []
+    timeDate = []
+    labels = []
+    values = []
+    chosenEventInstance = None
+    if request.method == "POST":
+        tableType = request.form.get("tableType")
+        chosenEvent = request.form.get("chosenEvent")
+        if tableType == "":
+            flash("Please choose a type of progression to display.",category="error")
+        else:
+            progressionType = tableType
+            eventIDs = []
+            eventNames = []
+            eventTimes = []
+            eventComp = []
+            eventDate = []
+            if tableType == "bestTimes":
+                allTimes = CompetitionTimes.query.filter_by(userID=current_user.id).all()
+                for time in allTimes:
+                    if time.eventID not in eventIDs:
+                        eventIDs.append(time.eventID)
+                        event = Event.query.filter_by(id=time.eventID).first()
+                        eventNames.append(f"{event.distance} {event.stroke} {event.poolDistance}")
+                        eventTimes.append(time.timeSwam)
+                        eventCompetition = Competition.query.filter_by(id=time.competitionID).first()
+                        eventComp.append(eventCompetition.name)
+                        EDate = str(eventCompetition.date)
+                        eventDate.append(EDate.replace("00:00:00",""))
+                    else: #if the event has already been found
+                        indexpos = eventIDs.index(time.eventID)
+                        if eventTimes[indexpos] > time.timeSwam:
+                            eventTimes[indexpos] = time.timeSwam
+                            eventCompetition = Competition.query.filter_by(id=time.competitionID).first()
+                            eventComp[indexpos] = eventCompetition.name
+                            EDate = str(eventCompetition.date)
+                            eventDate[indexpos] = EDate.replace("00:00:00","")
+            elif tableType == "eventHistory":
+                session["tableType"] = "eventHistory"
+            if chosenEvent:
+                if chosenEvent == "":
+                    flash("Please choose an event to view event history for.", category="error")
+                else:
+                    graphData = []
+                    timesSwam = []
+                    timeComp = []
+                    timeDate = []
+                    chosenEventInstance = Event.query.filter_by(id=chosenEvent).first()
+                    compTimesInstances = CompetitionTimes.query.filter_by(eventID=chosenEventInstance.id).all()
+                    for time in compTimesInstances:
+                        timesSwam.append(time.timeSwam)
+                        timeCompetition = Competition.query.filter_by(id=time.competitionID).first()
+                        timeComp.append(timeCompetition.name)
+                        EDate = str(timeCompetition.date)
+                        timeDate.append(EDate.replace("00:00:00",""))
+                        graphData.append((EDate.replace("00:00:00",""),time.timeSwam))
+                        labels = [row[0] for row in graphData]
+                        values = [row[1] for row in graphData]
+            
+                        
+    return render_template("swimmerProgression.html", bestTimes=bestTimes,progressionType=progressionType, eventTimes=eventTimes,
+                           eventComp=eventComp,eventNames=eventNames,eventDate=eventDate,allEvents=allEvents,
+                           chosenEventInstance=chosenEventInstance, timesSwam=timesSwam, timeComp=timeComp,timeDate=timeDate,
+                           labels=labels,values=values)

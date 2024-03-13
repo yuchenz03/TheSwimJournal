@@ -6,72 +6,39 @@ The Swim Journal | Settings
 {% block content %}
 <h1>Edit Account Details</h1>
 <!--form to view and edit -->
-    <form method="POST">
-          <div class="form-group">
-              <label for="forename">First Name:</label>
-              <input 
-              type="text" 
-              name="forename" 
-              id="forename" 
-              value="{{ user.forename }}" 
-              class="form-control"
-              />
-          </div>
-          <div class="form-group">
-              <label for="surname">Last Name:</label>
-              <input 
-              type="text"
-              name="surname"
-              id="surname" 
-              value="{{ user.surname }}" 
-              class="form-control"
-              />
-          </div>
-          <div class="form-group">
-            <label for="password1">Password:</label>
-            <input 
-            type="password" 
-            name="password1" 
-            id="password1" 
-            class="form-control"
-            />
-          </div>
-          <div class="form-group">
-              <label for="password2">Password Again:</label>
-              <input 
-              type="password" 
-              name="password2" 
-              id="password2" 
-              class="form-control"
-              />
-          </div>
-          <div class="form-group">
-            <label for="squads_id">Squad ID</label>
-            <input 
-            type="text" 
-            name="squads_id" 
-            id="squads_id" 
-            value="{{ squadID }}"
-            class="form-control"
-            />
-        </div>
-        <div class="form-group">
-            <label for="gender">Gender</label>
-            <select 
-            name="gender" 
-            id="gender" 
-            class="form-control"
-            />
-                {% if user.gender == 'F'%}
-                <option value="F">Female</option>
-                <option value="M">Male</option>
-                {% else %}
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-                {% endif %}
+<form method="POST">
+    <div class="form-group">
+        <label for="forename">First Name:</label>
+        <input type="text" name="forename" id="forename" value="{{ user.forename }}" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="surname">Last Name:</label>
+        <input type="text" name="surname" id="surname" value="{{ user.surname }}" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password1">Password:</label>
+        <input type="password" name="password1" id="password1" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password2">Password Again:</label>
+        <input type="password" name="password2" id="password2" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="squads_id">Squad ID</label>
+        <input type="text" name="squads_id" id="squads_id" value="{{ squadID }}" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="gender">Gender</label>
+        <select name="gender" id="gender" class="form-control" />
+        {% if user.gender == 'F'%}
+        <option value="F">Female</option>
+        <option value="M">Male</option>
+        {% else %}
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+        {% endif %}
         </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
 {% endblock %}
-

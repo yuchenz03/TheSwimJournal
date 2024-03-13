@@ -4,56 +4,33 @@
 {% block title %}
 The Swim Journal | Settings
 {% endblock %}
-    
+
 {% block content %}
 <h1>Edit Account Details</h1>
 <!--A form that displays then inputs any changes to the user's settings-->
 <p></p>
-    <form method="POST">
-        <!--First input box: forename-->
-        <div class="form-group">
-            <label for="forename">First Name:</label>
-            <input 
-            type="text" 
-            name="forename" 
-            id="forename" 
-            value="{{ user.forename }}" 
-            class="form-control"
-            />
-        </div>
-        <!--Second input box: surname-->
-        <div class="form-group">
-            <label for="surname">Last Name:</label>
-            <input 
-            type="text"
-            name="surname"
-            id="surname" 
-            value="{{ user.surname }}" 
-            class="form-control"
-            />
-        </div>
-        <!--Third input box: password-->
-        <div class="form-group">
-          <label for="password1">Password:</label>
-          <input 
-          type="password" 
-          name="password1" 
-          id="password1" 
-          class="form-control"
-          />
-        </div>
-        <!--Fourth input box: confirmation of change of password-->
-        <div class="form-group">
-            <label for="password2">Password Again:</label>
-            <input 
-            type="password" 
-            name="password2" 
-            id="password2" 
-            class="form-control"
-            />
-        </div>
-        <!--A submit button-->
-        <button type="submit" class="btn btn-primary">Save Changes</button>
-    </form>
+<form method="POST">
+    <!--First input box: forename-->
+    <div class="form-group">
+        <label for="forename">First Name:</label>
+        <input type="text" name="forename" id="forename" value="{{ user.forename }}" class="form-control" />
+    </div>
+    <!--Second input box: surname-->
+    <div class="form-group">
+        <label for="surname">Last Name:</label>
+        <input type="text" name="surname" id="surname" value="{{ user.surname }}" class="form-control" />
+    </div>
+    <!--Third input box: password-->
+    <div class="form-group">
+        <label for="password1">Password:</label>
+        <input type="password" name="password1" id="password1" class="form-control" />
+    </div>
+    <!--Fourth input box: confirmation of change of password-->
+    <div class="form-group">
+        <label for="password2">Password Again:</label>
+        <input type="password" name="password2" id="password2" class="form-control" />
+    </div>
+    <!--A submit button-->
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
 {% endblock %}
-
