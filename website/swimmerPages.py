@@ -1,12 +1,12 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify #From the flask application, import Blueprint
+from flask import Blueprint, render_template, redirect, url_for, request, flash, jsonify, session #From the flask application, import Blueprint
 from . import db
-from .models import User, Session, SquadMembers #, Event, Goals, Times
+from .models import User, Session, SquadMembers, Squad, Event, SwimmerSession
 from werkzeug.security import generate_password_hash
 from flask_login import current_user, login_required
 import sqlite3
 from random import randint
 import json
-from datetime import date
+from datetime import date, time, datetime
 
 swimmerpages = Blueprint("swimmerPages", __name__)
 
@@ -22,14 +22,84 @@ def isValid(password):
 ### Pages for the swimmers ###
 
 @login_required
-@swimmerpages.route("/TodaySession") 
+@swimmerpages.route("/TodaySession", methods=['GET','POST']) 
 def swimmerTodaySession():
     user = User.query.filter_by(id=current_user.id).first()
     if user:
         name=current_user.forename.capitalize()
     else:
         name=""
-    return render_template("swimmerTodaySession.html", name=name) 
+    currtoday = date.today()
+    currtime = time(0,0)
+    datetime_combined = datetime.combine(currtoday, currtime)
+    userSquad = SquadMembers.query.filter_by(userID=current_user.id).first()
+    if userSquad:
+        squad = Squad.query.filter_by(id=userSquad.squadID).first()
+        userSessions = Session.query.filter_by(date=datetime_combined, squadID=userSquad.squadID).all()
+        squadName = squad.squadName
+    else:
+        userSessions = []
+        squad = None
+        squadName = ""
+    selectedSession = None
+    swimmerSession = None
+    
+    if request.method == 'POST':
+        hydration = request.form.get('hydration')
+        sleep = request.form.get('sleep')
+        stress = request.form.get('stress')
+        fatigue = request.form.get('fatigue')
+        selectedSessionID = request.form.get('selectedSessionID')
+        attendance = request.form.get('attendance')
+        sessionGoals = request.form.get('sessionGoals')
+        RAF = request.form.get('RAF') 
+        journal = request.form.get('journal')
+        journalPrivacy = request.form.get('journal')
+        
+        selectedSession = Session.query.filter_by(id=selectedSessionID).first()
+        if selectedSession:
+            session['selectedSessionID'] = selectedSession.id
+        if sleep != None:
+            print(sleep, stress, fatigue, hydration)
+            ATT = 100*(0.1333*(10-int(stress))/10) + (0.1333*(10-int(fatigue))/10) + (0.1333*int(hydration)/5) + (int(sleep)/9)*0.6
+            print(ATT)
+            if attendance == "on":
+                attendance = True
+            else:
+                attendance = False
+            if ATT < 50.0:
+                attendance = False
+                absenceReason = "Ability to train below 50%." 
+            
+            if journalPrivacy == "on":
+                journalPrivacy = "public"
+            else:
+                journalPrivacy = "private"
+
+            selectedSessionID = session.get('selectedSessionID')
+            selectedSession = Session.query.filter_by(id=selectedSessionID).first()
+            if selectedSession:
+                swimmerSession = SwimmerSession.query.filter_by(userID=current_user.id,sessionID=selectedSession.id)
+                if swimmerSession:
+                    swimmerSession.abilityToSwim = ATT
+                    swimmerSession.attendance = attendance
+                    swimmerSession.absenceReason = absenceReason
+                    swimmerSession.RAF = int(RAF)
+                    swimmerSession.sessionGoal = sessionGoals
+                    swimmerSession.journal = journal
+                    swimmerSession.journalPrivacy = journalPrivacy
+                else:
+                    newSwimmerSession = SwimmerSession(userID=current_user.id, sessionID=selectedSession.id,abilityToSwim=ATT, 
+                                                attendance=attendance, absenceReason=absenceReason, RAF=int(RAF), 
+                                                sessionGoal=sessionGoals, journal=journal, journalPrivacy=journalPrivacy)
+                    db.session.add(newSwimmerSession)
+                db.session.commit()
+                if ATT < 50.0:
+                    flash('Your calculated ability to train is less than recommended - do not attend training today.', category="success")
+                else:
+                    flash('Your details have been recorded!', category="success")
+    return render_template("swimmerTodaySession.html", name=name, squadName=squadName, selectedSession=selectedSession, 
+                           sessions=userSessions, swimmerSession=swimmerSession) 
    
 
 @login_required

@@ -9,120 +9,140 @@ The Swim Journal | Dashboard
 <style>
     /*Styling for the content container*/
     .container {
-      display: flex;
-      height: 100vh; 
+        display: flex;
+        height: 100vh;
     }
-    
+
     /*Styling for the left container*/
     .left {
-      flex: 60%; 
-      padding: 8px;
-      margin-right: 8px;
-      text-align: left 
+        flex: 50%;
+        padding: 8px;
+        margin-right: 8px;
     }
-    
+
     /*Styling for the right container*/
     .right {
-      flex: 40%; 
-      padding: 16px;
+        flex: 50%;
+        padding: 16px;
     }
-    </style>
-    {% endblock %}
-
-{% block content %}
-<div class="container">
-<div class="left">
-    <h1 style="text-align:left">Welcome, {{name}}!</h1>
-    <h2>Pre-session Questionnaire</h2>
-    <label for="sleep">Hours of sleep: <span id="sleepvalue"></span></label>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="range" id="sleep" name="sleep" min="0" max="9" step="1" value="8">
-    <span id="sleepvalue"></span>
-    <div>If you slept more than 9 hours of sleep, choose 9 hours.</div>
-    <script>
-        // JavaScript to update the selected value when the slider changes
-        var slider1 = document.getElementById("sleep");
-        var output1 = document.getElementById("sleepvalue");
-        output1.innerHTML = slider1.value;
-        slider1.oninput = function() {
-            output1.innerHTML = this.value;
-        };
-    </script>
-    <label for="stress">Stress: <span id="stressvalue"></span> </label>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input style="text-align:right" type="range" id="stress" name="stress" min="0" max="10" step="1" value="5">
-    <div>0 being least stressed, 10 being most stressed.</div>
-    <script>
-        var slider2 = document.getElementById("stress");
-        var output2 = document.getElementById("stressvalue");
-        output2.innerHTML = slider2.value;
-        slider2.oninput = function() {
-            output2.innerHTML = this.value;
-        };
-    </script>
-    <label for="fatigue">Fatigue: <span id="fatiguevalue"></span></label>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="range" id="fatigue" name="fatigue" min="0" max="10" step="1" value="5">
-    <div>0 being most fatigued, 10 being least fatigued.</div>
-    <script>
-        var slider3 = document.getElementById("fatigue");
-        var output3 = document.getElementById("fatiguevalue");
-        output3.innerHTML = slider3.value;
-        slider3.oninput = function() {
-            output3.innerHTML = this.value;
-        };
-    </script>
-
-    <label for="hydration">Hydration: <span id="hydrationvalue"></span></p></label>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="range" id="hydration" name="hydration" min="0" max="5" step="1" value="3">
-    <div>0 being feeling extremely thirsty, 5 being well-hydrated.</div>
-    <script>
-        var slider4 = document.getElementById("hydration");
-        var output4 = document.getElementById("hydrationvalue");
-        output4.innerHTML = slider4.value;
-        slider4.oninput = function() {
-            output4.innerHTML = this.value;
-        };
-    </script>
-
-    <hr>
-
-    <h2>Ability to Train</h2>
-    <button id="calculateButton">Calculate</button>
-    <p>Percentage: <span id="percentage">0</span></p>
-
-    <script>
-        // JavaScript to calculate the total score and display it when the button is clicked
-        calculateButton.onclick = function() {
-          var sleepValue = parseInt(document.getElementById("sleep").value);
-          var stressValue = parseInt(document.getElementById("stress").value);
-          var fatigueValue = parseInt(document.getElementById("fatigue").value); 
-          var hydrationValue = parseInt(document.getElementById("hydration").value);
-      
-          // Applying the formula
-          var ROF = ((10-stressValue) / 10 * 0.133333) + //ROF stands for rate of fatigue
-                    ((10-fatigueValue) / 10 * 0.133333) + 
-                    (hydrationValue / 5 * 0.133333) + 
-                    (sleepValue / 9 * 0.60);
-      
-          var calculatedPercentage = ROF * 100; // Convert to percentage
-      
-          percentage.innerHTML = calculatedPercentage.toFixed(2) + "%"; // Display percentage with two decimal places
-      };
-    </script>
-</div>
-
-<div class="right">
-    <br
-</div>
-</div>
+</style>
 {% endblock %}
 
+{% block content %}
+{% if sessions|length == 0 %}
+<h1>Welcome, {{name}}!</h1>
+<br>
+<div>No sessions today.</div>
+{% else %}
+<div class="container">
+    <div class="left">
+        <h1 style="text-align:left">Welcome, {{name}}!</h1>
+        <form method="POST">
+            <label for="selectedSessionID"></label>
+            <select name="selectedSessionID" id="selectedSessionID" class="form-control">
+                <option value="">Choose a session to view: </option>
+                {% for session in sessions %}
+                <option value="{{session.id}}">{{ squadName }} {{ session.time }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <button type="submit" class="btn btn-primary">Choose Session</button>
+        </form>
+
+        {% if selectedSession != None %}
+        <form method="POST">
+            <br>
+            <h2>Pre-session questionnaire</h2>
+            <label for="sleep">Hours of sleep: <span id="sleepvalue"></span></label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="range" id="sleep" name="sleep" min="0" max="9" step="1" value="8">
+            <span id="sleepvalue"></span>
+            <div>If you slept more than 9 hours of sleep, choose 9 hours.</div>
+            <script>
+                // JavaScript to update the selected value when the slider changes
+                var slider1 = document.getElementById("sleep");
+                var output1 = document.getElementById("sleepvalue");
+                output1.innerHTML = slider1.value;
+                slider1.oninput = function () {
+                    output1.innerHTML = this.value;
+                };
+            </script>
+            <label for="stress">Stress: <span id="stressvalue"></span> </label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input style="text-align:right" type="range" id="stress" name="stress" min="0" max="10" step="1" value="5">
+            <div>0 being least stressed, 10 being most stressed.</div>
+            <script>
+                var slider2 = document.getElementById("stress");
+                var output2 = document.getElementById("stressvalue");
+                output2.innerHTML = slider2.value;
+                slider2.oninput = function () {
+                    output2.innerHTML = this.value;
+                };
+            </script>
+            <label for="fatigue">Fatigue: <span id="fatiguevalue"></span></label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="range" id="fatigue" name="fatigue" min="0" max="10" step="1" value="5">
+            <div>0 being most fatigued, 10 being least fatigued.</div>
+            <script>
+                var slider3 = document.getElementById("fatigue");
+                var output3 = document.getElementById("fatiguevalue");
+                output3.innerHTML = slider3.value;
+                slider3.oninput = function () {
+                    output3.innerHTML = this.value;
+                };
+            </script>
+
+            <label for="hydration">Hydration: <span id="hydrationvalue"></span></p></label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="range" id="hydration" name="hydration" min="0" max="5" step="1" value="3">
+            <div>0 being feeling extremely thirsty, 5 being well-hydrated.</div>
+            <script>
+                var slider4 = document.getElementById("hydration");
+                var output4 = document.getElementById("hydrationvalue");
+                output4.innerHTML = slider4.value;
+                slider4.oninput = function () {
+                    output4.innerHTML = this.value;
+                };
+            </script>
+            <br>
+            <label for="attendance">Attending?</label>
+            <input type="checkbox" name="attendance" id="attendance"><br>
+
+            <div class="form-group">
+                <label for="sessionGoals">Session Goals</label>
+                <textarea type="textarea" name="sessionGoals" id="sessionGoals"
+                    class="form-control">{{swimmerSession.sessionGoal}} </textarea>
+            </div>
+
+    
+        {% endif %}
+        {% endif %}
+    </div>
+    <div class="right">
+        {% if selectedSession != None %}
+        <h1></h1>
+        <h2>Post-Session Reflections</h2>
+
+            <label for="RAF">Rate of Fatigue/10</label>
+            <input type="number" name="RAF" id="RAF" placeholder="{{swimmerSession.RAF}}" class="form-group" min="0" max="10">
+            <div class="form-group">
+                <label for="journal">Journal Entry</label>
+                <textarea type="textarea" name="journal" id="journal"
+                    class="form-control">{{swimmerSession.journal}} </textarea>
+            </div>
+            <label for="journalPrivacy">Public?</label>
+            <input type="checkbox" name="journalPrivacy" id="journalPrivacy"><br>
+            <br>
+            <button type="submit" class="btn btn-primary">Save information</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

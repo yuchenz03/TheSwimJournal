@@ -83,6 +83,7 @@ class SwimmerSession(db.Model):
     abilityToSwim = db.Column(db.Float) #percentage
     RAF = db.Column(db.Integer) #integer out of 10
     journalEntry = db.Column(db.String(1000)) #paragraph
+    journalPrivacy = db.Column(db.String(50)) #public or private
     userID = db.Column(db.Integer, db.ForeignKey('user.id')) #foreign key for user
 
 class CoachSession(db.Model):
