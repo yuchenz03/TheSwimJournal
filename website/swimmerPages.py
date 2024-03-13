@@ -60,9 +60,7 @@ def swimmerTodaySession():
         if selectedSession:
             session['selectedSessionID'] = selectedSession.id
         if sleep != None:
-            print(sleep, stress, fatigue, hydration)
             ATT = 100*(0.1333*(10-int(stress))/10) + (0.1333*(10-int(fatigue))/10) + (0.1333*int(hydration)/5) + (int(sleep)/9)*0.6
-            print(ATT)
             if attendance == "on":
                 attendance = True
             else:
@@ -75,25 +73,29 @@ def swimmerTodaySession():
                 journalPrivacy = "public"
             else:
                 journalPrivacy = "private"
+                
+            if RAF == '':
+                RAF = 0
 
             selectedSessionID = session.get('selectedSessionID')
             selectedSession = Session.query.filter_by(id=selectedSessionID).first()
             if selectedSession:
-                swimmerSession = SwimmerSession.query.filter_by(userID=current_user.id,sessionID=selectedSession.id)
+                swimmerSession = SwimmerSession.query.filter_by(userID=current_user.id,sessionID=selectedSession.id).first()
                 if swimmerSession:
                     swimmerSession.abilityToSwim = ATT
                     swimmerSession.attendance = attendance
                     swimmerSession.absenceReason = absenceReason
                     swimmerSession.RAF = int(RAF)
                     swimmerSession.sessionGoal = sessionGoals
-                    swimmerSession.journal = journal
+                    swimmerSession.journalEntry = journal
                     swimmerSession.journalPrivacy = journalPrivacy
+                    db.session.commit()
                 else:
                     newSwimmerSession = SwimmerSession(userID=current_user.id, sessionID=selectedSession.id,abilityToSwim=ATT, 
                                                 attendance=attendance, absenceReason=absenceReason, RAF=int(RAF), 
-                                                sessionGoal=sessionGoals, journal=journal, journalPrivacy=journalPrivacy)
+                                                sessionGoal=sessionGoals, journalEntry=journal, journalPrivacy=journalPrivacy)
                     db.session.add(newSwimmerSession)
-                db.session.commit()
+                    db.session.commit()
                 if ATT < 50.0:
                     flash('Your calculated ability to train is less than recommended - do not attend training today.', category="success")
                 else:
